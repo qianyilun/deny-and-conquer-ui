@@ -83,4 +83,4 @@ modules.xml
 .idea/description.html
 .idea/encodings.xml
 .idea/vcs.xml
-out/
+/out/production/deny-and-conquer-ui/sample/sample.fxml
