@@ -71,7 +71,7 @@
                      <children>
                         <Pane prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <TextArea layoutX="36.0" layoutY="14.0" prefHeight="38.0" prefWidth="124.0" text="You are Client" />
+                              <TextArea layoutX="36.0" layoutY="14.0" prefHeight="38.0" prefWidth="124.0" text="You are Client!" />
                               <ToggleButton layoutX="50.0" layoutY="88.0" mnemonicParsing="false" text="ToggleButton" />
                            </children>
                         </Pane>
