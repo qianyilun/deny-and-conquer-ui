@@ -37,7 +37,7 @@ public class CanvasController {
             int column = Integer.parseInt(boxColumn.getText());
             int percent = Integer.parseInt(boxPercentToColor.getText());
 
-            if (row >= 1 && column >= 1 && percent >= 1) {
+            if (row >= 1 && column >= 1 && percent >= 1 && percent <= 100) {
                 CanvasModel canvasModel = new CanvasModel(row, column, percent);
                 Status.getInstance().setCanvasModel(canvasModel);
 
