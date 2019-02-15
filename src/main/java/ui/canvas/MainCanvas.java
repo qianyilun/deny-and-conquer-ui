@@ -1,4 +1,4 @@
-package ui.register;
+package ui.canvas;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -6,11 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class MainCanvas extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/register.fxml"));
-        primaryStage.setTitle("deny-and-conquer-register");
+        Parent root = FXMLLoader.load(getClass().getResource("/canvas.fxml"));
+        primaryStage.setTitle("deny-and-conquer-canvas");
         primaryStage.setScene(new Scene(root, 350, 275));
         primaryStage.getScene();
 
