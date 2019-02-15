@@ -11,7 +11,7 @@ public class MainCanvas extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/canvas.fxml"));
         primaryStage.setTitle("deny-and-conquer-canvas");
-        primaryStage.setScene(new Scene(root, 350, 275));
+        primaryStage.setScene(new Scene(root, 700, 700));
         primaryStage.getScene();
 
         primaryStage.show();
