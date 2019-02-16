@@ -147,19 +147,10 @@ public class CanvasController {
                     @Override
                     public void handle(MouseEvent event) {
 
-                        graphicsContext.lineTo(event.getX(), event.getY());
+//                        graphicsContext.lineTo(event.getX(), event.getY());
+                        graphicsContext.setFill(Color.BLACK);
+                        graphicsContext.fillRect(event.getX(), event.getY(), 1, 1);
 
-                        DrawCoordinator coordinator = new DrawCoordinator(event.getX(), event.getY());
-                        if (!currentBoxModel.getColoredArea().contains(coordinator)) {
-                            currentBoxModel.addColoredArea(1);
-                            currentBoxModel.getColoredArea().add(coordinator);
-//                            System.out.println(currentBoxModel.getCurrentBoxArea());
-                        } else {
-                            System.out.println(event.getX() + " " + event.getY());
-//                            System.exit(1);
-                        }
-
-                        graphicsContext.stroke();
                     }
                 });
 
@@ -167,7 +158,7 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
-
+                        System.out.println(BoxModel.arr);
                     }
                 });
     }
@@ -209,9 +200,9 @@ public class CanvasController {
         double canvasWidth = gc.getCanvas().getWidth();
         double canvasHeight = gc.getCanvas().getHeight();
 
-//        gc.setFill(Color.LIGHTGRAY);
-//        gc.setStroke(Color.BLACK);
-//        gc.setLineWidth(5);
+        gc.setFill(Color.LIGHTGRAY);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(5);
 
         gc.fill();
         gc.strokeRect(
@@ -223,6 +214,8 @@ public class CanvasController {
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
+
+//        gc.getPixelWriter().setColor();
     }
 
     private BoxModel determineCurrentBoxModel(MouseEvent event) {
