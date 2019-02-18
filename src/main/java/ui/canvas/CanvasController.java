@@ -2,27 +2,30 @@ package ui.canvas;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import model.Status;
 import ui.register.BoxModel;
 import ui.register.CanvasModel;
+import ui.register.ColorUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.awt.*;
 
 public class CanvasController {
     private CanvasModel canvasModel;
-    private BoxModel currentBoxModel;
 
     public Text playerNameLabel;
     public Text playerRankLabel;
@@ -31,7 +34,6 @@ public class CanvasController {
     public ColorPicker colorPicker;
     public Slider penThickness;
     public TextArea boxRow;
-    public TextArea boxColumn;
     public Button readyBtn;
     public Button startBtn;
     public Label progressPercentLabel;
@@ -42,14 +44,12 @@ public class CanvasController {
     public GridPane canvasGridPane;
     public Canvas canvasTest;
 
-    private double boxArea = 0;
-
     public void onSetCanvasBtnClicked(ActionEvent event) {
         if (Status.getInstance().isInGame()) {
             return;
         }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Canvas cannot be changed once you submitted.", ButtonType.YES, ButtonType.CANCEL);
+        Alert alert = new Alert(Alert.AlertType.WARNING, "Canvas cannot be changed once you submitted.", ButtonType.YES, ButtonType.CANCEL);
         alert.showAndWait();
 
         if (alert.getResult() != ButtonType.YES) {
@@ -58,11 +58,11 @@ public class CanvasController {
 
         try {
             int row = Integer.parseInt(boxRow.getText());
-            int column = Integer.parseInt(boxColumn.getText());
+            int column = Integer.parseInt(boxRow.getText());
             int percent = Integer.parseInt(boxPercentToColor.getText());
 
             if (row >= 1 && column >= 1 && percent >= 1 && percent <= 100) {
-                canvasModel = new CanvasModel(row, column, percent);
+                canvasModel = new CanvasModel(row, column, percent, 100);
                 Status.getInstance().setCanvasModel(canvasModel);
 
                 System.out.println("Canvas Model has been set to " + Status.getInstance().getCanvasModel());
@@ -78,12 +78,15 @@ public class CanvasController {
             Alert error = new Alert(Alert.AlertType.ERROR, "Please enter valid canvas settings" + ButtonType.OK);
             error.showAndWait();
             boxRow.clear();
-            boxColumn.clear();
+            boxRow.clear();
             boxPercentToColor.clear();
         }
     }
 
     private void updateCanvasGridPanel(CanvasModel canvasModel) {
+        // set pen thickness
+        canvasModel.setPenThickness(penThickness.getValue());
+
         // generate grids in gridPane
         int numRows = canvasModel.getCanvasRow();
         for (int i = 0; i < numRows; i++) {
@@ -104,7 +107,7 @@ public class CanvasController {
         double width = canvasGridPane.getWidth()/numCols;
         double height = canvasGridPane.getHeight()/numRows;
 
-        boxArea = width * height;
+        double boxArea = width * height;
 
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numCols; j++) {
@@ -118,7 +121,13 @@ public class CanvasController {
 
                 drawCanvas(canvas);
 
-                canvasModel.getBoxes().add(new BoxModel(boxArea));
+                BoxModel boxModel = new BoxModel(boxArea);
+                boxModel.setCanvas(canvas);
+
+                boxModel.setBoxX(j * width);
+                boxModel.setBoxY(i * height);
+
+                canvasModel.getBoxes().add(boxModel);
 
                 canvasGridPane.add(canvas, i, j);
             }
@@ -132,13 +141,9 @@ public class CanvasController {
 
         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED,
                 new EventHandler<MouseEvent>(){
-
                     @Override
                     public void handle(MouseEvent event) {
-                        currentBoxModel = determineCurrentBoxModel(event);
-                        graphicsContext.beginPath();
-                        graphicsContext.moveTo(event.getX(), event.getY());
-                        graphicsContext.stroke();
+                        colorPixels(event, graphicsContext, canvasModel.getPenThickness());
                     }
                 });
 
@@ -146,11 +151,7 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
-
-//                        graphicsContext.lineTo(event.getX(), event.getY());
-                        graphicsContext.setFill(Color.BLACK);
-                        graphicsContext.fillRect(event.getX(), event.getY(), 1, 1);
-
+                        colorPixels(event, graphicsContext, canvasModel.getPenThickness());
                     }
                 });
 
@@ -158,12 +159,55 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
-                        System.out.println(BoxModel.arr);
+                        BoxModel currentBoxModel = determineCurrentBoxModel(event);
+                        System.out.println(currentBoxModel.getBoxArea());
+                        System.out.println(currentBoxModel.getCanvas().getId() + ": " + currentBoxModel.getColoredArea());
                     }
                 });
     }
 
-    public void onReadyClicked(ActionEvent event) {
+    private boolean isWithinCurrentBox(BoxModel currentBoxModel, MouseEvent event) {
+        double x = event.getX() + currentBoxModel.getBoxX();
+        double y = event.getY() + currentBoxModel.getBoxY();
+
+        return x >= currentBoxModel.getBoxX() && x <= currentBoxModel.getBoxX() + currentBoxModel.getCanvas().getWidth()
+                && y >= currentBoxModel.getBoxY() && y <= currentBoxModel.getBoxY() + currentBoxModel.getCanvas().getHeight();
+    }
+
+    private void colorPixels(MouseEvent event, GraphicsContext graphicsContext, double penThickness) {
+        BoxModel currentBoxModel = determineCurrentBoxModel(event);
+        if (!isWithinCurrentBox(currentBoxModel, event)) {
+            return;
+        }
+        if (isPixelColored()) {
+            return;
+        }
+
+        currentBoxModel.addColoredArea(penThickness);
+        graphicsContext.setFill(colorPicker.getValue());
+        graphicsContext.fillRect(event.getX(), event.getY(), penThickness, penThickness);
+    }
+
+    private boolean isPixelColored() {
+        // https://stackoverflow.com/questions/13061122/getting-rgb-value-from-under-mouse-cursor
+        try {
+            Robot robot = new Robot();
+            PointerInfo pi = MouseInfo.getPointerInfo();
+            Point point = pi.getLocation();
+            java.awt.Color awtColor = robot.getPixelColor(point.x, point.y);
+            if (!awtColor.equals(java.awt.Color.WHITE)) {
+                return true;
+            }
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @FXML
+    private void onReadyClicked(ActionEvent event) {
+        System.out.println(ColorUtils.toAwtColor(colorPicker.getValue()));
         if (Status.getInstance().isInGame()) {
             return;
         }
@@ -173,7 +217,7 @@ public class CanvasController {
             colorPicker.setDisable(true);
             penThickness.setDisable(true);
             boxRow.setDisable(true);
-            boxColumn.setDisable(true);
+            boxRow.setDisable(true);
             boxPercentToColor.setDisable(true);
             setCanvasBtn.setDisable(true);
             readyBtn.setText("Cancel");
@@ -181,7 +225,7 @@ public class CanvasController {
             colorPicker.setDisable(false);
             penThickness.setDisable(false);
             boxRow.setDisable(false);
-            boxColumn.setDisable(false);
+            boxRow.setDisable(false);
             boxPercentToColor.setDisable(false);
             setCanvasBtn.setDisable(false);
             readyBtn.setText("Ready");
@@ -191,7 +235,7 @@ public class CanvasController {
 
     private void disableCanvasSettings() {
         boxRow.setDisable(true);
-        boxColumn.setDisable(true);
+        boxRow.setDisable(true);
         boxPercentToColor.setDisable(true);
         setCanvasBtn.setDisable(true);
     }
@@ -214,11 +258,15 @@ public class CanvasController {
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
-
-//        gc.getPixelWriter().setColor();
     }
 
     private BoxModel determineCurrentBoxModel(MouseEvent event) {
-        return canvasModel.getBoxes().get(0);
+        String canvasId = ((Canvas) event.getSource()).getId();
+        for (BoxModel boxModel : canvasModel.getBoxes()) {
+            if (canvasId.equals(boxModel.getCanvas().getId())) {
+                return boxModel;
+            }
+        }
+        return null;
     }
 }

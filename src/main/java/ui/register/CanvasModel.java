@@ -8,12 +8,22 @@ public class CanvasModel {
     private int canvasColumn;
     private int canvasPercent;
     private List<BoxModel> boxes;
+    private double penThickness;
 
-    public CanvasModel(int canvasRow, int canvasColumn, int canvasPercent) {
+    public CanvasModel(int canvasRow, int canvasColumn, int canvasPercent, double penThickness) {
         this.canvasRow = canvasRow;
         this.canvasColumn = canvasColumn;
         this.canvasPercent = canvasPercent;
         boxes = new ArrayList<>(canvasRow * canvasColumn);
+        this.penThickness = penThickness;
+    }
+
+    public double getPenThickness() {
+        return penThickness;
+    }
+
+    public void setPenThickness(double penThickness) {
+        this.penThickness = penThickness;
     }
 
     public int getCanvasRow() {
