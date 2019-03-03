@@ -45,8 +45,8 @@ public class BoxModel {
         this.coloredArea = coloredArea;
     }
 
-    public void addColoredArea(double times) {
-        coloredArea += (times*times);
+    public void addColoredArea(double width) {
+        coloredArea += (width*width);
     }
 
     public double getBoxArea() {

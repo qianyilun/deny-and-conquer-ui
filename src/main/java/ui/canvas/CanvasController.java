@@ -14,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import model.Status;
@@ -29,14 +28,11 @@ public class CanvasController {
 
     public Text playerNameLabel;
     public Text playerRankLabel;
-    public ProgressBar progressBar;
-    public Label progressLabel;
     public ColorPicker colorPicker;
     public Slider penThickness;
     public TextArea boxRow;
     public Button readyBtn;
     public Button startBtn;
-    public Label progressPercentLabel;
     public Text playerMachineLabel;
     public TextArea boxPercentToColor;
     public Label penSettingLabel;
@@ -143,7 +139,6 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
-                        colorPixels(event, graphicsContext, canvasModel.getPenThickness());
                     }
                 });
 
@@ -160,6 +155,13 @@ public class CanvasController {
                     @Override
                     public void handle(MouseEvent event) {
                         BoxModel currentBoxModel = determineCurrentBoxModel(event);
+                        if (currentBoxModel.getColoredArea() >= Double.parseDouble(boxPercentToColor.getText()) / 100 * currentBoxModel.getBoxArea() ) {
+                            graphicsContext.setFill(colorPicker.getValue());
+                            graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
+                        } else {
+                            graphicsContext.setFill(Color.WHITE);
+                            graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
+                        }
                         System.out.println(currentBoxModel.getBoxArea());
                         System.out.println(currentBoxModel.getCanvas().getId() + ": " + currentBoxModel.getColoredArea());
                     }
@@ -185,7 +187,7 @@ public class CanvasController {
 
         currentBoxModel.addColoredArea(penThickness);
         graphicsContext.setFill(colorPicker.getValue());
-        graphicsContext.fillRect(event.getX(), event.getY(), penThickness, penThickness);
+        graphicsContext.fillRect(event.getX()-penThickness, event.getY()-penThickness, 2*penThickness, 2*penThickness);
     }
 
     private boolean isPixelColored() {

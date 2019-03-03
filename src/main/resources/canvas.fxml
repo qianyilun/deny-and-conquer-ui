@@ -5,24 +5,21 @@
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<SplitPane dividerPositions="0.2512254901960784, 0.8075980392156863" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.canvas.CanvasController">
-   <items>
-      <Pane prefHeight="431.0" prefWidth="200.0">
+<HBox minHeight="1000.0" minWidth="1400.0" prefHeight="1000.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.canvas.CanvasController">
+   <children>
+      <Pane>
          <children>
             <Text fx:id="playerNameLabel" layoutX="31.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hi  Allen" wrappingWidth="88.21875" />
             <Text fx:id="playerRankLabel" layoutX="34.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rank: 1" wrappingWidth="88.21875" />
-            <ProgressBar fx:id="progressBar" layoutX="38.0" layoutY="376.0" prefHeight="34.0" prefWidth="125.0" progress="0.0" />
-            <Label fx:id="progressLabel" layoutX="74.0" layoutY="346.0" text="Progress" />
             <ColorPicker fx:id="colorPicker" layoutX="31.0" layoutY="156.0" />
             <Slider fx:id="penThickness" blockIncrement="0.1" layoutX="31.0" layoutY="198.0" max="10.0" min="1.0" prefHeight="38.0" prefWidth="139.0" showTickLabels="true" showTickMarks="true" value="5.0" />
             <TextArea fx:id="boxRow" layoutX="14.0" layoutY="246.0" prefHeight="27.0" prefWidth="29.0">
@@ -31,11 +28,9 @@
                </font>
             </TextArea>
             <Button fx:id="setCanvasBtn" layoutX="66.0" layoutY="246.0" mnemonicParsing="false" onAction="#onSetCanvasBtnClicked" text="Set Canvas!" />
-            <Button fx:id="readyBtn" layoutX="38.0" layoutY="470.0" mnemonicParsing="false" onAction="#onReadyClicked" text="Ready" />
-            <Button fx:id="startBtn" layoutX="116.0" layoutY="470.0" mnemonicParsing="false" text="Start!" />
-            <Label fx:id="progressPercentLabel" layoutX="93.0" layoutY="421.0" text="0%" />
+            <Button fx:id="readyBtn" layoutX="38.0" layoutY="369.0" mnemonicParsing="false" onAction="#onReadyClicked" text="Ready" />
+            <Button fx:id="startBtn" layoutX="112.0" layoutY="369.0" mnemonicParsing="false" text="Start!" />
             <Text fx:id="playerMachineLabel" layoutX="31.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You are machine 2" wrappingWidth="138.65526074171066" />
-            <Separator layoutX="10.0" layoutY="446.0" prefHeight="3.0" prefWidth="183.0" />
             <Separator layoutX="12.0" layoutY="334.0" prefHeight="3.0" prefWidth="183.0" />
             <TextArea fx:id="boxPercentToColor" layoutX="16.0" layoutY="287.0" prefHeight="27.0" prefWidth="29.0">
                <font>
@@ -54,13 +49,15 @@
                   <Font size="18.0" />
                </font>
             </Label>
-         </children></Pane>
-      <GridPane fx:id="canvasGridPane" gridLinesVisible="true" style="-fx-background-color: WHITE;">
+         </children>
+      </Pane>
+      <GridPane fx:id="canvasGridPane" gridLinesVisible="true" minHeight="1000.0" minWidth="1000.0" prefHeight="1000.0" prefWidth="1000.0" style="-fx-background-color: WHITE; -fx-background-size: 1000;">
       </GridPane>
-      <Pane prefHeight="518.0" prefWidth="100.0">
+      <Pane style="-fx-background-size: 1500;">
          <children>
             <ListView fx:id="playList" layoutX="2.0" layoutY="1.0" prefHeight="214.0" prefWidth="153.0" />
-            <Canvas fx:id="canvasTest" height="207.0" layoutX="2.0" layoutY="250.0" width="153.0" />
-         </children></Pane>
-   </items>
-</SplitPane>
+            <Canvas fx:id="canvasTest" height="214.0" layoutY="287.0" width="100.0" />
+         </children>
+      </Pane>
+   </children>
+</HBox>
