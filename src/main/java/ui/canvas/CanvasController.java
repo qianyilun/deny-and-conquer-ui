@@ -59,9 +59,6 @@ public class CanvasController {
 
             if (row >= 1 && column >= 1 && percent >= 1 && percent <= 100) {
                 canvasModel = new CanvasModel(row, column, percent, 100);
-                Status.getInstance().setCanvasModel(canvasModel);
-
-                System.out.println("Canvas Model has been set to " + Status.getInstance().getCanvasModel());
 
                 updateCanvasGridPanel(canvasModel);
 
