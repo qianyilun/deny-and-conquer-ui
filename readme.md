@@ -12,10 +12,10 @@
 {
     players: [
         "palyer1": {
-        	name: "player1",
-        	id: "1",
-        	ip: "1.1.1.1",
-        	color: "blue",
+        	playerName: "player1",
+        	playerId: "1",
+        	playerIP: "1.1.1.1",
+        	playerColor: "blue",
         	thickness: "1"        	        	
         },
         "player2": {
@@ -37,3 +37,23 @@
 }
 ```
 
+
+
+### Use Case
+
+
+
+#### Prepare step
+
+* Client enters its name and server's IP
+  * Program sends this new client's information to server
+  * Program waits for server's response (with a timeout to resend)
+    * response: client's color, thickness, percentage, other client's IP
+* Client swith UI to canvas
+
+
+
+### Notes
+
+* Each program will run server and client at the same time
+* try to use TCP
