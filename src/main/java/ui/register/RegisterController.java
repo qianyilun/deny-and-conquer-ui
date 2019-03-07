@@ -1,13 +1,18 @@
 package ui.register;
 
+import facade.InstanceManager;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import utils.ColorUtils;
 
+import java.awt.*;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -15,12 +20,8 @@ public class RegisterController {
     public TextArea playerNameText;
     public TextArea hostIPText;
     public Button connectBtn;
-    public CheckBox hostCheckbox;
-    public Label hostIPLabel;
-    public Label playerNameLabel;
-    public AnchorPane registerAnchorPanel;
-    public Label playerIPLabel;
     public Text playerIPText;
+    public ColorPicker clientColorPicker;
 
     public void initialRegisterPanel() {
         String playerIp = "unknown";
@@ -37,11 +38,15 @@ public class RegisterController {
         playerIPText.setText(playerIp);
     }
 
-    public void hostButtonClicked(ActionEvent event) {
-        if (hostCheckbox.isSelected()) {
-            hostIPText.setDisable(true);
-        } else {
-            hostIPText.setDisable(false);
+    @FXML
+    private void onConnectClick(ActionEvent event) throws IOException, ClassNotFoundException {
+        String playerName = playerNameText.getText();
+        Color awtColor = ColorUtils.toAwtColor(clientColorPicker.getValue());
+        boolean result = InstanceManager.getLoginService().registerToServer(playerName, awtColor);
+
+        if (result) {
+            System.out.println("The window will be closed");
         }
     }
+
 }
