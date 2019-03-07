@@ -3,7 +3,6 @@ package ui.canvas;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -19,7 +18,7 @@ import javafx.scene.text.Text;
 import model.Status;
 import ui.register.BoxModel;
 import ui.register.CanvasModel;
-import ui.register.ColorUtils;
+import utils.ColorUtils;
 
 import java.awt.*;
 
