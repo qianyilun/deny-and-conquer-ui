@@ -1,4 +1,4 @@
-package ui.register;
+package utils;
 
 import javafx.scene.paint.Color;
 
