@@ -1,26 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<Pane fx:id="registerPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="266.0" prefWidth="332.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.register.RegisterController">
+<Pane fx:id="registerPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="332.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.register.RegisterController">
    <children>
-      <AnchorPane fx:id="registerAnchorPanel" layoutX="-4.0" prefHeight="263.0" prefWidth="341.0">
-         <children>
-            <Label fx:id="playerNameLabel" layoutX="38.0" layoutY="50.0" text="Name:" />
-            <TextArea fx:id="playerNameText" layoutX="115.0" layoutY="37.0" prefHeight="42.0" prefWidth="179.0" />
-            <Label fx:id="hostIPLabel" layoutX="34.0" layoutY="112.0" text="Host IP:" />
-            <TextArea fx:id="hostIPText" layoutX="115.0" layoutY="99.0" prefHeight="41.0" prefWidth="179.0" />
-            <CheckBox fx:id="hostCheckbox" layoutX="107.0" layoutY="161.0" mnemonicParsing="false" onAction="#hostButtonClicked" text="I will be the host" />
-            <Button fx:id="connectBtn" layoutX="134.0" layoutY="193.0" mnemonicParsing="false" text="Connect" />
-            <Label fx:id="playerIPLabel" layoutX="93.0" layoutY="232.0" text="You IP is: " />
-            <Text fx:id="playerIPText" layoutX="157.0" layoutY="245.0" onMouseClicked="#initialRegisterPanel" strokeType="OUTSIDE" strokeWidth="0.0" text="click to see IP" />
-         </children>
-      </AnchorPane>
+      <TabPane layoutX="-4.0" prefWidth="341.0">
+         <tabs>
+            <Tab fx:id="joinTab" closable="false" text="Join">
+               <content>
+                  <AnchorPane fx:id="registerAnchorPanel" prefHeight="263.0" prefWidth="341.0">
+                     <children>
+                        <Label fx:id="playerNameLabel" layoutX="38.0" layoutY="50.0" text="Name:" />
+                        <TextArea fx:id="playerNameText" layoutX="115.0" layoutY="37.0" prefHeight="42.0" prefWidth="179.0" />
+                        <Label fx:id="hostIPLabel" layoutX="34.0" layoutY="112.0" text="Host IP:" />
+                        <TextArea fx:id="hostIPText" layoutX="115.0" layoutY="99.0" prefHeight="41.0" prefWidth="179.0" />
+                        <Button fx:id="connectBtn" layoutX="134.0" layoutY="193.0" mnemonicParsing="false" text="Connect" />
+                        <Label fx:id="playerIPLabel" layoutX="93.0" layoutY="232.0" text="You IP is: " />
+                        <Text fx:id="playerIPText" layoutX="157.0" layoutY="245.0" onMouseClicked="#initialRegisterPanel" strokeType="OUTSIDE" strokeWidth="0.0" text="click to see IP" />
+                        <ColorPicker fx:id="clientColorPicker" layoutX="101.0" layoutY="157.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="createTab" closable="false" text="Create">
+               <content>
+                  <AnchorPane fx:id="registerAnchorPanel1" prefHeight="263.0" prefWidth="341.0">
+                     <children>
+                        <Label fx:id="playerNameLabel1" layoutX="38.0" layoutY="50.0" text="Name:" />
+                        <TextArea fx:id="playerNameText1" layoutX="115.0" layoutY="37.0" prefHeight="42.0" prefWidth="179.0" />
+                        <Label fx:id="hostIPLabel1" layoutX="34.0" layoutY="112.0" text="How many players" />
+                        <TextArea fx:id="numberOfPlayers" layoutX="184.0" layoutY="99.0" prefHeight="43.0" prefWidth="110.0" />
+                        <Button fx:id="connectBtn1" layoutX="134.0" layoutY="193.0" mnemonicParsing="false" text="Connect" />
+                        <Label fx:id="playerIPLabel1" layoutX="93.0" layoutY="232.0" text="You IP is: " />
+                        <Text fx:id="playerIPText1" layoutX="157.0" layoutY="245.0" onMouseClicked="#initialRegisterPanel" strokeType="OUTSIDE" strokeWidth="0.0" text="click to see IP" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
    </children>
 </Pane>
