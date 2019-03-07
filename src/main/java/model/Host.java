@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  *
  * server will send different "host" data package to different client
  */
-public class Host {
+public class Host implements Serializable {
     private List<Player> playerList;
 
     private double thickness;
