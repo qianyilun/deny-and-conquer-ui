@@ -3,6 +3,7 @@ package model;
 import java.awt.*;
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.util.List;
 
 /**
@@ -10,25 +11,25 @@ import java.util.List;
  *
  * server will send different "host" data package to different client
  */
-public class Host implements Serializable {
-    private List<Player> playerList;
+public class ConfigurationDTO implements Serializable {
+    private List<Socket> socketList;
 
     private double thickness;
 
     private int rows;
 
-    public Host(List<Player> playerList, double thickness, int rows) {
-        this.playerList = playerList;
+    public ConfigurationDTO(List<Socket> socketList, double thickness, int rows) {
+        this.socketList = socketList;
         this.thickness = thickness;
         this.rows = rows;
     }
 
-    public List<Player> getPlayerList() {
-        return playerList;
+    public List<Socket> getSocketList() {
+        return socketList;
     }
 
-    public void setPlayerList(List<Player> playerList) {
-        this.playerList = playerList;
+    public void setSocketList(List<Socket> socketList) {
+        this.socketList = socketList;
     }
 
     public double getThickness() {
@@ -49,8 +50,8 @@ public class Host implements Serializable {
 
     @Override
     public String toString() {
-        return "Host{" +
-                "playerList=" + playerList +
+        return "ConfigurationDTO{" +
+                "socketList=" + socketList +
                 ", thickness=" + thickness +
                 ", rows=" + rows +
                 '}';
