@@ -2,17 +2,17 @@ package model;
 
 import ui.register.CanvasModel;
 
-public class Status {
-    private static Status ourInstance = new Status();
+public class LocalStatus {
+    private static LocalStatus ourInstance = new LocalStatus();
     private boolean isInGame = false;
     private boolean isHost = false;
     private CanvasModel canvasModel;
 
-    public static Status getInstance() {
+    public static LocalStatus getInstance() {
         return ourInstance;
     }
 
-    private Status() {
+    private LocalStatus() {
     }
 
     public CanvasModel getCanvasModel() {
@@ -23,12 +23,12 @@ public class Status {
         this.canvasModel = canvasModel;
     }
 
-    public static Status getOurInstance() {
+    public static LocalStatus getOurInstance() {
         return ourInstance;
     }
 
-    public static void setOurInstance(Status ourInstance) {
-        Status.ourInstance = ourInstance;
+    public static void setOurInstance(LocalStatus ourInstance) {
+        LocalStatus.ourInstance = ourInstance;
     }
 
     public boolean isInGame() {

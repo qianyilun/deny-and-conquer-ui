@@ -15,7 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.Status;
+import model.LocalStatus;
 import ui.register.BoxModel;
 import ui.register.CanvasModel;
 import utils.ColorUtils;
@@ -40,7 +40,7 @@ public class CanvasController {
     public Canvas canvasTest;
 
     public void onSetCanvasBtnClicked(ActionEvent event) {
-        if (Status.getInstance().isInGame()) {
+        if (LocalStatus.getInstance().isInGame()) {
             return;
         }
 
@@ -206,7 +206,7 @@ public class CanvasController {
     @FXML
     private void onReadyClicked(ActionEvent event) {
         System.out.println(ColorUtils.toAwtColor(colorPicker.getValue()));
-        if (Status.getInstance().isInGame()) {
+        if (LocalStatus.getInstance().isInGame()) {
             return;
         }
 
