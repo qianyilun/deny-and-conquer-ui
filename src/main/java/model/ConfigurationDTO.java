@@ -13,31 +13,15 @@ import java.util.List;
  */
 public class ConfigurationDTO implements Serializable {
     private List<PlayerDTO> playerDTOList;
-
-    private double thickness;
-
+    private int thickness;
     private int rows;
+    private int percent;
 
-    public ConfigurationDTO(List<PlayerDTO> playerDTOList, double thickness, int rows) {
+    public ConfigurationDTO(List<PlayerDTO> playerDTOList, int thickness, int rows, int percent) {
         this.playerDTOList = playerDTOList;
         this.thickness = thickness;
         this.rows = rows;
-    }
-
-    public double getThickness() {
-        return thickness;
-    }
-
-    public void setThickness(double thickness) {
-        this.thickness = thickness;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public void setRows(int rows) {
-        this.rows = rows;
+        this.percent = percent;
     }
 
     @Override
@@ -46,6 +30,7 @@ public class ConfigurationDTO implements Serializable {
                 "playerDTOList=" + playerDTOList +
                 ", thickness=" + thickness +
                 ", rows=" + rows +
+                ", percent=" + percent +
                 '}';
     }
 }

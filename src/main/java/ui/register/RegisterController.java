@@ -33,6 +33,7 @@ public class RegisterController implements Initializable {
     public ChoiceBox thicknessChoiceBox;
     public Text playerIPText1;
     public TextField numOfRowText;
+    public TextField percentageText;
 
     public void initialRegisterPanel() {
         String playerIp = "unknown";
@@ -67,7 +68,8 @@ public class RegisterController implements Initializable {
         int numOfPlayer = Integer.parseInt(numOfPlayersText.getText());
         int thickness = (int) thicknessChoiceBox.getValue();
         int row = Integer.parseInt(numOfRowText.getText());
-        InstanceManager.getLoginService().launchGameConfigurationWorker(hostName, numOfPlayer, thickness, row);
+        int percent = Integer.parseInt(percentageText.getText());
+        InstanceManager.getLoginService().launchGameConfigurationWorker(hostName, numOfPlayer, thickness, row, percent);
     }
 
     @Override
