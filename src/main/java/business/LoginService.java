@@ -1,13 +1,13 @@
 package business;
 
-import model.Host;
+import facade.ServerManager;
+import model.ConfigurationDTO;
 import model.Player;
 
 import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class LoginService {
     /**
@@ -16,15 +16,15 @@ public class LoginService {
      *
      * @return
      */
-    public boolean registerToServer(String name, Color color) throws IOException, ClassNotFoundException {
+    public boolean retrieveGameConfigurationFromServer(String name, Color color) throws IOException, ClassNotFoundException {
         InetAddress thisMachineIP = InetAddress.getLocalHost();
         Player player = new Player(name, thisMachineIP, color);
 
         // TODO: move to independent class
-        InetAddress serverIp = InetAddress.getByName("192.168.0.13");
+        InetAddress serverIp = InetAddress.getByName("192.168.0.15");
 
 
-        Socket clientSocket = new Socket("192.168.0.13", 7777);
+        Socket clientSocket = new Socket("192.168.0.15", 7777);
         System.out.println("Connected!");
 
 
@@ -37,10 +37,22 @@ public class LoginService {
 
         ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
 
-        Host host = (Host) objectInputStream.readObject();
+        player = (Player) objectInputStream.readObject();
 
-        System.out.println(host);
+        System.out.println(player);
 
+        return true;
+    }
+
+    /**
+     * 1. create a game "room"
+     * 2. creator as a host
+     * 3. creator runs a server
+     *
+     * @return
+     */
+    public boolean launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row) throws IOException {
+        ServerManager.launch(numOfPlayers, thickness, row);
         return true;
     }
 }
