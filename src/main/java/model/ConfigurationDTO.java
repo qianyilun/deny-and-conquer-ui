@@ -12,24 +12,16 @@ import java.util.List;
  * server will send different "host" data package to different client
  */
 public class ConfigurationDTO implements Serializable {
-    private List<Socket> socketList;
+    private List<PlayerDTO> playerDTOList;
 
     private double thickness;
 
     private int rows;
 
-    public ConfigurationDTO(List<Socket> socketList, double thickness, int rows) {
-        this.socketList = socketList;
+    public ConfigurationDTO(List<PlayerDTO> playerDTOList, double thickness, int rows) {
+        this.playerDTOList = playerDTOList;
         this.thickness = thickness;
         this.rows = rows;
-    }
-
-    public List<Socket> getSocketList() {
-        return socketList;
-    }
-
-    public void setSocketList(List<Socket> socketList) {
-        this.socketList = socketList;
     }
 
     public double getThickness() {
@@ -51,7 +43,7 @@ public class ConfigurationDTO implements Serializable {
     @Override
     public String toString() {
         return "ConfigurationDTO{" +
-                "socketList=" + socketList +
+                "playerDTOList=" + playerDTOList +
                 ", thickness=" + thickness +
                 ", rows=" + rows +
                 '}';

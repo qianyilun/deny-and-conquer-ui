@@ -1,9 +1,11 @@
 package daemon;
 
 import model.ConfigurationDTO;
+import model.PlayerDTO;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServerWorker implements Runnable {
@@ -26,9 +28,23 @@ public class ServerWorker implements Runnable {
     }
 
     private void init() {
-        configurationDTO = new ConfigurationDTO(socketList, thickness, row);
+        List<PlayerDTO> playerDTOList = new ArrayList<>();
+        for (Socket socket1 : socketList) {
+            try {
+                PlayerDTO playerDTO = parsePlayerDTOFromSocket(socket1);
+                playerDTOList.add(playerDTO);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        configurationDTO = new ConfigurationDTO(playerDTOList, thickness, row);
     }
 
+    private PlayerDTO parsePlayerDTOFromSocket(Socket socket1) throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInputStream = new ObjectInputStream(socket1.getInputStream());
+        PlayerDTO playerDTO = (PlayerDTO) objectInputStream.readObject();
+        return playerDTO;
+    }
 
     @Override
     public void run() {

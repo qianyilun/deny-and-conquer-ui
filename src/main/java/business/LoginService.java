@@ -2,7 +2,7 @@ package business;
 
 import facade.ServerManager;
 import model.ConfigurationDTO;
-import model.Player;
+import model.PlayerDTO;
 
 import java.awt.*;
 import java.io.*;
@@ -17,8 +17,8 @@ public class LoginService {
      * @return
      */
     public boolean retrieveGameConfigurationFromServer(String name, Color color) throws IOException, ClassNotFoundException {
-        InetAddress thisMachineIP = InetAddress.getLocalHost();
-        Player player = new Player(name, thisMachineIP, color);
+        InetAddress addr = InetAddress.getLocalHost();
+        PlayerDTO playerDTO = new PlayerDTO(addr.getHostAddress(), name, color);
 
         // TODO: move to independent class
         InetAddress serverIp = InetAddress.getByName("192.168.0.15");
@@ -33,13 +33,13 @@ public class LoginService {
         // create an object output stream from the output stream so we can send an object through it
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 
-        objectOutputStream.writeObject(player);
+        objectOutputStream.writeObject(playerDTO);
 
         ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
 
-        player = (Player) objectInputStream.readObject();
+        ConfigurationDTO configurationDTO = (ConfigurationDTO) objectInputStream.readObject();
 
-        System.out.println(player);
+        System.out.println(configurationDTO);
 
         return true;
     }
