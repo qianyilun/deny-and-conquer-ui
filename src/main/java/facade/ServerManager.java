@@ -56,6 +56,7 @@ public class ServerManager {
                         ServerWorker worker = new ServerWorker("Thread-" + i, playerSocket, socketList, thickness, row);
                         worker.start();
                     }
+//                    return;
                 }
 
                 if (requestCounter > numOfPlayers) {

@@ -21,6 +21,8 @@ public class ServerWorker implements Runnable {
         this.socketList = socketList;
         this.thickness = thickness;
         this.row = row;
+
+        init();
     }
 
     private void init() {
@@ -39,7 +41,7 @@ public class ServerWorker implements Runnable {
             // read the content from the socket
             objectInputStream.writeObject(configurationDTO);
 
-
+            System.out.println(configurationDTO);
 
 
         } catch (IOException e) {
