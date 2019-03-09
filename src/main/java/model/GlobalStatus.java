@@ -6,17 +6,17 @@ import java.util.List;
 public class GlobalStatus {
     private static GlobalStatus ourInstance = new GlobalStatus();
 
-    private List<Player> players;
+    private ConfigurationDTO configurationDTO;
 
     public static GlobalStatus getInstance() {
         return ourInstance;
     }
 
-    private GlobalStatus() {
-        players = new ArrayList<>();
+    public ConfigurationDTO getConfigurationDTO() {
+        return configurationDTO;
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public void setConfigurationDTO(ConfigurationDTO configurationDTO) {
+        this.configurationDTO = configurationDTO;
     }
 }
