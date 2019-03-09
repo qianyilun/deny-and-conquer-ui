@@ -1,8 +1,12 @@
 package business;
 
 import facade.ServerManager;
+import javafx.stage.Stage;
 import model.ConfigurationDTO;
+import model.GlobalStatus;
 import model.PlayerDTO;
+import ui.canvas.MainCanvas;
+import ui.register.Main;
 
 import java.awt.*;
 import java.io.*;
@@ -41,6 +45,8 @@ public class LoginService {
 
         System.out.println(configurationDTO);
 
+        GlobalStatus.getInstance().setConfigurationDTO(configurationDTO);
+
         return true;
     }
 
@@ -51,8 +57,14 @@ public class LoginService {
      *
      * @return
      */
-    public boolean launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row) throws IOException {
-        ServerManager.launch(numOfPlayers, thickness, row);
+    public boolean launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row, int percent) throws IOException {
+        boolean received = ServerManager.launch(numOfPlayers, thickness, row, percent);
+        if (received) {
+            // game begin
+            Stage stage = Main.getStage();
+            stage.hide();
+            MainCanvas.launchCanvas(stage);
+        }
         return true;
     }
 }

@@ -13,7 +13,7 @@ public class ServerManager {
 //        launch(1);
     }
 
-    public static void launch(int numOfPlayers, int thickness, int row) throws IOException {
+    public static boolean launch(int numOfPlayers, int thickness, int row, int percent) throws IOException {
         int requestCounter = 0;
         ServerSocket ss = null;
         try {
@@ -49,14 +49,14 @@ public class ServerManager {
                     for (int i = 0; i < socketList.size(); i++) {
                         // launch new thread to handle each request
                         Socket playerSocket = socketList.get(i);
-                        ServerWorker worker = new ServerWorker("Thread-" + i, playerSocket, socketList, thickness, row);
+                        ServerWorker worker = new ServerWorker("Thread-" + i, playerSocket, socketList, thickness, row, percent);
                         worker.start();
                     }
-//                    return;
+                    return true;
                 }
 
                 if (requestCounter > numOfPlayers) {
-                    continue;
+                    break;
                 }
             }
         } catch (IOException e) {
@@ -67,5 +67,6 @@ public class ServerManager {
                 ss.close();
             }
         }
+        return false;
     }
 }
