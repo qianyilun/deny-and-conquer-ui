@@ -87,21 +87,24 @@ public class LoginService {
         MainCanvas.launchCanvas(stage);
     }
 
-    private void prepareCanvasDataForServer(String hostName, int thickness, int row, int percent) {
-        List<BoxModel> boxes = new ArrayList<>(row * row);
-        java.awt.Color color = LocalStatus.getInstance().getColor();
+    public void prepareCanvasDataForServer(String hostName, int thickness, int row, int percent) {
+        List<BoxModel> boxes = new ArrayList<>(100);
+        CanvasModel.getInstance().initFields(8, 1, 8, Color.BLUE);
 
-        CanvasModel.getInstance().initFields(row, percent, boxes, thickness, color);
+//        List<BoxModel> boxes = new ArrayList<>(row * row);
+//        java.awt.Color color = LocalStatus.getInstance().getColor();
+//
+//        CanvasModel.getInstance().initFields(row, percent, boxes, thickness, color);
     }
 
     private void prepareCanvasDataForClient() {
         ConfigurationDTO configurationDTO = GlobalStatus.getInstance().getConfigurationDTO();
         int row = configurationDTO.getRows();
         int percent = configurationDTO.getPercent();
-        List<BoxModel> boxes = new ArrayList<>(row * row);
+//        List<BoxModel> boxes = new ArrayList<>(row * row);
         int thickness = configurationDTO.getThickness();
         java.awt.Color color = LocalStatus.getInstance().getColor();
 
-        CanvasModel.getInstance().initFields(row, percent, boxes, thickness, color);
+        CanvasModel.getInstance().initFields(row, percent, thickness, color);
     }
 }

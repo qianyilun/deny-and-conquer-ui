@@ -1,6 +1,7 @@
 package ui.register.model;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CanvasModel {
@@ -19,10 +20,10 @@ public class CanvasModel {
     private int penThickness;
     private Color color;
 
-    public void initFields(int row, int percent, List<BoxModel> boxes, int penThickness, Color color) {
+    public void initFields(int row, int percent, int penThickness, Color color) {
         this.row = row;
         this.percent = percent;
-        this.boxes = boxes;
+        this.boxes = new ArrayList<>(row * row);
         this.penThickness = penThickness;
         this.color = color;
     }

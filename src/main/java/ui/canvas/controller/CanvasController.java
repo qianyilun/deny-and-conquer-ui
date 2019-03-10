@@ -3,81 +3,44 @@ package ui.canvas.controller;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.ConfigurationDTO;
-import model.GlobalStatus;
-import model.LocalStatus;
 import ui.register.model.BoxModel;
 import ui.register.model.CanvasModel;
 import utils.ColorUtils;
 
-import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
-public class CanvasController implements Initializable {
+public class CanvasController {
     public Text playerNameLabel;
     public Text playerRankLabel;
-//    public ColorPicker colorPicker;
+    public ColorPicker colorPicker;
 //    public Slider penThickness;
 //    public TextArea boxRow;
     public Button readyBtn;
     public Button startBtn;
     public Text playerMachineLabel;
-    public TextArea boxPercentToColor;
+//    public TextArea boxPercentToColor;
     public Label penSettingLabel;
 //    public Button setCanvasBtn;
     public GridPane canvasGridPane;
     public Canvas canvasTest;
 
+    private boolean firstClickOnGrid = true;
+
     public void onSetCanvasBtnClicked(ActionEvent event) {
-//        if (LocalStatus.getInstance().isInGame()) {
-//            return;
-//        }
-//
-//        Alert alert = new Alert(Alert.AlertType.WARNING, "Canvas cannot be changed once you submitted.", ButtonType.YES, ButtonType.CANCEL);
-//        alert.showAndWait();
-//
-//        if (alert.getResult() != ButtonType.YES) {
-//            return;
-//        }
-//
-//        try {
-//            int row = Integer.parseInt(boxRow.getText());
-//            int column = Integer.parseInt(boxRow.getText());
-//            int percent = Integer.parseInt(boxPercentToColor.getText());
-//
-//            if (row >= 1 && column >= 1 && percent >= 1 && percent <= 100) {
-//                canvasModel = new CanvasModel(row, column, percent, 100);
-//
-//                updateCanvasGridPanel(canvasModel);
-//
-//                disableCanvasSettings();
-//            } else {
-//                throw new NumberFormatException();
-//            }
-//        } catch (NumberFormatException e) {
-//            // https://stackoverflow.com/questions/8309981/how-to-create-and-show-common-dialog-error-warning-confirmation-in-javafx-2
-//            Alert error = new Alert(Alert.AlertType.ERROR, "Please enter valid canvas settings" + ButtonType.OK);
-//            error.showAndWait();
-//            boxRow.clear();
-//            boxRow.clear();
-//            boxPercentToColor.clear();
-//        }
+
+        drawCanvasGridPanel();
+
     }
 
     private void drawCanvasGridPanel() {
@@ -104,6 +67,7 @@ public class CanvasController implements Initializable {
 
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numRows; j++) {
+                System.out.println(i + " " + j);
                 Canvas canvas = new Canvas();
                 canvas.setId("canvas" + i  + "-" + j);
 
@@ -111,6 +75,8 @@ public class CanvasController implements Initializable {
 
                 canvas.setWidth(width);
                 canvas.setHeight(width);
+
+                canvas.setOnMouseClicked((event -> System.out.println("clickedddd")));
 
                 drawBoxes(canvas, canvasModel);
 
@@ -125,6 +91,7 @@ public class CanvasController implements Initializable {
                 canvasGridPane.add(canvas, i, j);
             }
         }
+        System.out.println(canvasGridPane.getChildren().size());
     }
 
     // https://stackoverflow.com/questions/43429251/how-to-draw-a-continuous-line-with-mouse-on-javafx-canvas
@@ -152,12 +119,13 @@ public class CanvasController implements Initializable {
                     @Override
                     public void handle(MouseEvent event) {
                         BoxModel currentBoxModel = determineCurrentBoxModel(event, canvasModel);
-                        if (currentBoxModel.getColoredArea() >= Double.parseDouble(boxPercentToColor.getText()) / 100 * currentBoxModel.getBoxArea() ) {
+                        if (currentBoxModel.getColoredArea() >= (double) canvasModel.getPenThickness() / 100 * currentBoxModel.getBoxArea() ) {
                             graphicsContext.setFill(ColorUtils.toFxColor(canvasModel.getColor())/*colorPicker.getValue()*/);
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
                         } else {
                             graphicsContext.setFill(Color.WHITE);
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
+                            initDraw(graphicsContext);
                         }
                         System.out.println(currentBoxModel.getBoxArea());
                         System.out.println(currentBoxModel.getCanvas().getId() + ": " + currentBoxModel.getColoredArea());
@@ -239,8 +207,8 @@ public class CanvasController implements Initializable {
         double canvasHeight = gc.getCanvas().getHeight();
 
         gc.setFill(Color.LIGHTGRAY);
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(5);
+        gc.setStroke(Color.LIGHTGRAY);
+        gc.setLineWidth(1);
 
         gc.fill();
         gc.strokeRect(
@@ -264,11 +232,12 @@ public class CanvasController implements Initializable {
         return null;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        drawCanvasGridPanel();
-
-//        disableCanvasSettings();
+    public void initialize(){
+        canvasGridPane.setOnMouseClicked(event -> {
+            if (firstClickOnGrid) {
+                drawCanvasGridPanel();
+                firstClickOnGrid = false;
+            }
+        });
     }
 }
