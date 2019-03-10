@@ -4,6 +4,7 @@ import facade.ServerManager;
 import javafx.stage.Stage;
 import model.ConfigurationDTO;
 import model.GlobalStatus;
+import model.LocalStatus;
 import model.PlayerDTO;
 import ui.canvas.MainCanvas;
 import ui.register.Main;
@@ -20,7 +21,7 @@ public class LoginService {
      *
      * @return
      */
-    public boolean retrieveGameConfigurationFromServer(String name, Color color) throws IOException, ClassNotFoundException {
+    public boolean sendAndRetrieveGameConfigurationFromServer(String name, Color color) throws IOException, ClassNotFoundException {
         InetAddress addr = InetAddress.getLocalHost();
         PlayerDTO playerDTO = new PlayerDTO(addr.getHostAddress(), name, color);
 
@@ -47,6 +48,11 @@ public class LoginService {
 
         GlobalStatus.getInstance().setConfigurationDTO(configurationDTO);
 
+        return true;
+    }
+
+    public boolean setLocalColorToLocalStatus(Color color) {
+        LocalStatus.getInstance().setColor(color);
         return true;
     }
 
