@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<Pane fx:id="registerPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="381.0" prefWidth="332.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.register.controller.RegisterController">
+<Pane fx:id="registerPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="332.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.register.controller.RegisterController">
    <children>
       <TabPane layoutX="-4.0" prefWidth="341.0">
          <tabs>
@@ -33,21 +33,22 @@
             </Tab>
             <Tab fx:id="createTab" closable="false" text="Create">
                <content>
-                  <AnchorPane fx:id="registerAnchorPanel1" prefHeight="348.0" prefWidth="341.0">
+                  <AnchorPane fx:id="registerAnchorPanel1" prefHeight="416.0" prefWidth="341.0">
                      <children>
                         <Label fx:id="playerNameLabel1" layoutX="37.0" layoutY="50.0" text="Name:" />
                         <TextField fx:id="hostNameText" layoutX="113.0" layoutY="45.0" prefHeight="21.0" prefWidth="179.0" />
                         <Label fx:id="hostIPLabel1" layoutX="34.0" layoutY="99.0" text="How many players" />
                         <TextField fx:id="numOfPlayersText" layoutX="184.0" layoutY="99.0" prefHeight="23.0" prefWidth="110.0" />
-                        <Button fx:id="hostBtn" layoutX="137.0" layoutY="297.0" mnemonicParsing="false" onAction="#onHostButtonClick" text="Host" />
-                        <Label fx:id="playerIPLabel1" layoutX="96.0" layoutY="269.0" text="You IP is: " />
-                        <Text fx:id="playerIPText1" layoutX="160.0" layoutY="282.0" onMouseClicked="#initialRegisterPanel" strokeType="OUTSIDE" strokeWidth="0.0" text="click to see IP" />
+                        <Button fx:id="hostBtn" layoutX="137.0" layoutY="368.0" mnemonicParsing="false" onAction="#onHostButtonClick" text="Host" />
+                        <Label fx:id="playerIPLabel1" layoutX="96.0" layoutY="340.0" text="You IP is: " />
+                        <Text fx:id="playerIPText1" layoutX="160.0" layoutY="353.0" onMouseClicked="#initialRegisterPanel" strokeType="OUTSIDE" strokeWidth="0.0" text="click to see IP" />
                         <Label layoutX="34.0" layoutY="146.0" text="Pen thickness" />
                         <ChoiceBox fx:id="thicknessChoiceBox" layoutX="147.0" layoutY="141.0" prefWidth="150.0" />
                         <Label layoutX="34.0" layoutY="195.0" text="Row" />
                         <TextField fx:id="numOfRowText" layoutX="139.0" layoutY="189.0" />
                         <Label layoutX="33.0" layoutY="231.0" text="Percentage" />
                         <TextField fx:id="percentageText" layoutX="139.0" layoutY="226.0" />
+                        <ColorPicker fx:id="serverColorPicker" layoutX="101.0" layoutY="284.0" />
                      </children>
                   </AnchorPane>
                </content>
