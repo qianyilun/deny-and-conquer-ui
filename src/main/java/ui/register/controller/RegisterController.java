@@ -1,4 +1,4 @@
-package ui.register;
+package ui.register.controller;
 
 import facade.InstanceManager;
 import javafx.collections.FXCollections;
@@ -55,9 +55,10 @@ public class RegisterController implements Initializable {
     private void onConnectButtonClick(ActionEvent event) throws IOException, ClassNotFoundException {
         String playerName = playerNameText.getText();
         Color awtColor = ColorUtils.toAwtColor(clientColorPicker.getValue());
-        boolean result = InstanceManager.getLoginService().retrieveGameConfigurationFromServer(playerName, awtColor);
+        boolean setLocalColor = InstanceManager.getLoginService().setLocalColorToLocalStatus(awtColor);
+        boolean sendAndRetrieve = InstanceManager.getLoginService().sendAndRetrieveGameConfigurationFromServer(playerName, awtColor);
 
-        if (result) {
+        if (setLocalColor && sendAndRetrieve) {
             System.out.println("The window will be closed");
         }
     }

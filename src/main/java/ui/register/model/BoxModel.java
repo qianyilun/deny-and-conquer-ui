@@ -1,4 +1,4 @@
-package ui.register;
+package ui.register.model;
 
 import javafx.scene.canvas.Canvas;
 

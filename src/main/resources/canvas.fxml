@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox minHeight="1000.0" minWidth="1400.0" prefHeight="1000.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.canvas.CanvasController">
+<HBox minHeight="1000.0" minWidth="1400.0" prefHeight="1000.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.canvas.controller.CanvasController">
    <children>
       <Pane>
          <children>
