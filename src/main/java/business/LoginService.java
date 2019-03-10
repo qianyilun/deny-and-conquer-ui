@@ -54,6 +54,8 @@ public class LoginService {
 
         prepareCanvasDataForClient();
 
+        launchCanvas();
+
         return true;
     }
 
@@ -74,11 +76,15 @@ public class LoginService {
         boolean received = ServerManager.launch(numOfPlayers, thickness, row, percent);
         if (received) {
             // game begin
-            Stage stage = Main.getStage();
-            stage.hide();
-            MainCanvas.launchCanvas(stage);
+            launchCanvas();
         }
 //        return true;
+    }
+
+    private void launchCanvas() throws IOException {
+        Stage stage = Main.getStage();
+        stage.hide();
+        MainCanvas.launchCanvas(stage);
     }
 
     private void prepareCanvasDataForServer(String hostName, int thickness, int row, int percent) {
