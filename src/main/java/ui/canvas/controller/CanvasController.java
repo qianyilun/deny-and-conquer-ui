@@ -2,6 +2,7 @@ package ui.canvas.controller;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -204,8 +205,8 @@ public class CanvasController implements Initializable {
         return false;
     }
 
-//    @FXML
-//    private void onReadyClicked(ActionEvent event) {
+    @FXML
+    private void onReadyClicked(ActionEvent event) {
 //        System.out.println(ColorUtils.toAwtColor(colorPicker.getValue()));
 //        if (LocalStatus.getInstance().isInGame()) {
 //            return;
@@ -230,7 +231,7 @@ public class CanvasController implements Initializable {
 //            readyBtn.setText("Ready");
 //        }
 //
-//    }
+    }
 
 
     private void initDraw(GraphicsContext gc){
@@ -265,14 +266,7 @@ public class CanvasController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ConfigurationDTO configurationDTO = GlobalStatus.getInstance().getConfigurationDTO();
-        int row = configurationDTO.getRows();
-        int percent = configurationDTO.getPercent();
-        List<BoxModel> boxes = new ArrayList<>(row * row);
-        int thickness = configurationDTO.getThickness();
-        java.awt.Color color = LocalStatus.getInstance().getColor();
 
-        CanvasModel.getInstance().initFields(row, percent, boxes, thickness, color);
         drawCanvasGridPanel();
 
 //        disableCanvasSettings();

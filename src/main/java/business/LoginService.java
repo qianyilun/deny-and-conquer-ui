@@ -8,11 +8,15 @@ import model.LocalStatus;
 import model.PlayerDTO;
 import ui.canvas.MainCanvas;
 import ui.register.Main;
+import ui.register.model.BoxModel;
+import ui.register.model.CanvasModel;
 
 import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginService {
     /**
@@ -48,6 +52,8 @@ public class LoginService {
 
         GlobalStatus.getInstance().setConfigurationDTO(configurationDTO);
 
+        prepareCanvasDataForClient();
+
         return true;
     }
 
@@ -63,7 +69,8 @@ public class LoginService {
      *
      * @return
      */
-    public boolean launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row, int percent) throws IOException {
+    public void launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row, int percent) throws IOException {
+        prepareCanvasDataForServer(hostName, thickness, row, percent);
         boolean received = ServerManager.launch(numOfPlayers, thickness, row, percent);
         if (received) {
             // game begin
@@ -71,6 +78,24 @@ public class LoginService {
             stage.hide();
             MainCanvas.launchCanvas(stage);
         }
-        return true;
+//        return true;
+    }
+
+    private void prepareCanvasDataForServer(String hostName, int thickness, int row, int percent) {
+        List<BoxModel> boxes = new ArrayList<>(row * row);
+        java.awt.Color color = LocalStatus.getInstance().getColor();
+
+        CanvasModel.getInstance().initFields(row, percent, boxes, thickness, color);
+    }
+
+    private void prepareCanvasDataForClient() {
+        ConfigurationDTO configurationDTO = GlobalStatus.getInstance().getConfigurationDTO();
+        int row = configurationDTO.getRows();
+        int percent = configurationDTO.getPercent();
+        List<BoxModel> boxes = new ArrayList<>(row * row);
+        int thickness = configurationDTO.getThickness();
+        java.awt.Color color = LocalStatus.getInstance().getColor();
+
+        CanvasModel.getInstance().initFields(row, percent, boxes, thickness, color);
     }
 }
