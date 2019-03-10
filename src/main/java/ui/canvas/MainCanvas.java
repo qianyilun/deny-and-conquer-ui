@@ -12,16 +12,16 @@ import java.io.IOException;
 public class MainCanvas extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
-        ServiceManager.getLoginService().prepareCanvasDataForServer(null, 0, 0, 0);
-
-        Parent root = FXMLLoader.load(getClass().getResource("/canvas.fxml"));
-        primaryStage.setTitle("deny-and-conquer-canvas");
-        primaryStage.setScene(new Scene(root, 1500, 1000));
-        primaryStage.getScene();
-
-
-
-        primaryStage.show();
+//        ServiceManager.getLoginService().prepareCanvasDataForServer(null, 0, 0, 0);
+//
+//        Parent root = FXMLLoader.load(getClass().getResource("/canvas.fxml"));
+//        primaryStage.setTitle("deny-and-conquer-canvas");
+//        primaryStage.setScene(new Scene(root, 1500, 1000));
+//        primaryStage.getScene();
+//
+//
+//
+//        primaryStage.show();
     }
 
 
