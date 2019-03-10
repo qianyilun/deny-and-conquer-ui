@@ -1,9 +1,6 @@
 package model;
 
-import java.awt.*;
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.List;
 
 /**
@@ -22,6 +19,22 @@ public class ConfigurationDTO implements Serializable {
         this.thickness = thickness;
         this.rows = rows;
         this.percent = percent;
+    }
+
+    public List<PlayerDTO> getPlayerDTOList() {
+        return playerDTOList;
+    }
+
+    public int getThickness() {
+        return thickness;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getPercent() {
+        return percent;
     }
 
     @Override

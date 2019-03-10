@@ -1,12 +1,15 @@
 package model;
 
-import ui.register.CanvasModel;
+import ui.register.model.CanvasModel;
+
+import java.awt.Color;
 
 public class LocalStatus {
     private static LocalStatus ourInstance = new LocalStatus();
     private boolean isInGame = false;
     private boolean isHost = false;
     private CanvasModel canvasModel;
+    private Color color;
 
     public static LocalStatus getInstance() {
         return ourInstance;
@@ -45,5 +48,13 @@ public class LocalStatus {
 
     public void setHost(boolean host) {
         isHost = host;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }
