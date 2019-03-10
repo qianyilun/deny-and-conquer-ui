@@ -21,10 +21,10 @@ public class LoginService {
         PlayerDTO playerDTO = new PlayerDTO(addr.getHostAddress(), name, color);
 
         // TODO: move to independent class
-        InetAddress serverIp = InetAddress.getByName("192.168.0.15");
+        InetAddress serverIp = InetAddress.getByName("192.168.0.13");
 
 
-        Socket clientSocket = new Socket("192.168.0.15", 7777);
+        Socket clientSocket = new Socket("192.168.0.13", 7777);
         System.out.println("Connected!");
 
 
