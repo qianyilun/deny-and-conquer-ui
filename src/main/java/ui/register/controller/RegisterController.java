@@ -1,18 +1,14 @@
 package ui.register.controller;
 
-import facade.InstanceManager;
+import facade.ServiceManager;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import model.ConfigurationDTO;
 import utils.ColorUtils;
 
 import java.awt.*;
@@ -34,6 +30,7 @@ public class RegisterController implements Initializable {
     public Text playerIPText1;
     public TextField numOfRowText;
     public TextField percentageText;
+    public ColorPicker serverColorPicker;
 
     public void initialRegisterPanel() {
         String playerIp = "unknown";
@@ -55,8 +52,8 @@ public class RegisterController implements Initializable {
     private void onConnectButtonClick(ActionEvent event) throws IOException, ClassNotFoundException {
         String playerName = playerNameText.getText();
         Color awtColor = ColorUtils.toAwtColor(clientColorPicker.getValue());
-        boolean setLocalColor = InstanceManager.getLoginService().setLocalColorToLocalStatus(awtColor);
-        boolean sendAndRetrieve = InstanceManager.getLoginService().sendAndRetrieveGameConfigurationFromServer(playerName, awtColor);
+        boolean setLocalColor = ServiceManager.getLoginService().setLocalColorToLocalStatus(awtColor);
+        boolean sendAndRetrieve = ServiceManager.getLoginService().sendAndRetrieveGameConfigurationFromServer(playerName, awtColor);
 
         if (setLocalColor && sendAndRetrieve) {
             System.out.println("The window will be closed");
@@ -70,7 +67,9 @@ public class RegisterController implements Initializable {
         int thickness = (int) thicknessChoiceBox.getValue();
         int row = Integer.parseInt(numOfRowText.getText());
         int percent = Integer.parseInt(percentageText.getText());
-        InstanceManager.getLoginService().launchGameConfigurationWorker(hostName, numOfPlayer, thickness, row, percent);
+        Color awtColor = ColorUtils.toAwtColor(serverColorPicker.getValue());
+        ServiceManager.getLoginService().setLocalColorToLocalStatus(awtColor);
+        ServiceManager.getLoginService().launchGameConfigurationWorker(hostName, numOfPlayer, thickness, row, percent);
     }
 
     @Override
