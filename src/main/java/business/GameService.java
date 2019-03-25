@@ -18,7 +18,16 @@ public class GameService {
     private GameService() {
     }
 
-    public GameState gameState;
+    private GameState gameState;
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(List<BoxModel> boxes) {
+        GameState newState = new GameState(boxes);
+        syncGameState(newState);
+    }
 
     public void syncGameState(GameState newState) {
         this.gameState.updateGameBoxes(newState.getGameBoxes());

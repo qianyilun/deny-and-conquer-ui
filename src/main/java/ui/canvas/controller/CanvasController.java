@@ -1,5 +1,6 @@
 package ui.canvas.controller;
 
+import business.GameService;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.GameState;
 import ui.register.model.BoxModel;
 import ui.register.model.CanvasModel;
 import utils.ColorUtils;
@@ -40,8 +42,7 @@ public class CanvasController {
     public void onSetCanvasBtnClicked(ActionEvent event) {
 
         drawCanvasGridPanel();
-
-
+        GameService.getInstance().setGameState(CanvasModel.getInstance().getBoxes());
     }
 
     private void drawCanvasGridPanel() {
