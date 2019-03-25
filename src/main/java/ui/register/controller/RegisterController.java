@@ -51,9 +51,10 @@ public class RegisterController implements Initializable {
     @FXML
     private void onConnectButtonClick(ActionEvent event) throws IOException, ClassNotFoundException {
         String playerName = playerNameText.getText();
+        String hostIP = hostIPText.getText();
         Color awtColor = ColorUtils.toAwtColor(clientColorPicker.getValue());
         boolean setLocalColor = ServiceManager.getLoginService().setLocalColorToLocalStatus(awtColor);
-        boolean sendAndRetrieve = ServiceManager.getLoginService().sendAndRetrieveGameConfigurationFromServer(playerName, awtColor);
+        boolean sendAndRetrieve = ServiceManager.getLoginService().sendAndRetrieveGameConfigurationFromServer(playerName, awtColor, hostIP);
 
         if (setLocalColor && sendAndRetrieve) {
             System.out.println("The window will be closed");

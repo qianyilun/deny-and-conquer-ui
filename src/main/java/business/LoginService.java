@@ -8,15 +8,12 @@ import model.LocalStatus;
 import model.PlayerDTO;
 import ui.canvas.MainCanvas;
 import ui.register.Main;
-import ui.register.model.BoxModel;
 import ui.register.model.CanvasModel;
 
 import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoginService {
     /**
@@ -25,7 +22,7 @@ public class LoginService {
      *
      * @return
      */
-    public boolean sendAndRetrieveGameConfigurationFromServer(String name, Color color) throws IOException, ClassNotFoundException {
+    public boolean sendAndRetrieveGameConfigurationFromServer(String name, Color color, String hostIP) throws IOException, ClassNotFoundException {
         InetAddress addr = InetAddress.getLocalHost();
         PlayerDTO playerDTO = new PlayerDTO(addr.getHostAddress(), name, color);
 
@@ -33,7 +30,7 @@ public class LoginService {
         InetAddress serverIp = InetAddress.getByName("192.168.0.15");
 
 
-        Socket clientSocket = new Socket("192.168.0.15", 7777);
+        Socket clientSocket = new Socket(hostIP, 7777);
         System.out.println("Connected!");
 
 
