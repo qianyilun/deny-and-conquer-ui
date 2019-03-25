@@ -41,6 +41,7 @@ public class CanvasController {
 
         drawCanvasGridPanel();
 
+
     }
 
     private void drawCanvasGridPanel() {

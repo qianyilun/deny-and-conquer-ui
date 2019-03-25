@@ -3,6 +3,7 @@ package ui.register.model;
 import javafx.scene.canvas.Canvas;
 
 public class BoxModel {
+    // TODO: Add ownership container to each box in order to not have to keep track of them externally
     private double coloredArea;
     private double boxArea;
     private double boxX;
