@@ -2,7 +2,6 @@ package model;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.List;
 
 public class PlayerDTO implements Serializable {
     private String playerIP;
@@ -16,6 +15,22 @@ public class PlayerDTO implements Serializable {
         this.playerName = playerName;
         this.playerColor = playerColor;
         this.isServer = LocalStatus.getInstance().isHost();
+    }
+
+    public String getPlayerIP() {
+        return playerIP;
+    }
+
+    public void setPlayerIP(String playerIP) {
+        this.playerIP = playerIP;
+    }
+
+    public boolean isServer() {
+        return isServer;
+    }
+
+    public void setServer(boolean server) {
+        isServer = server;
     }
 
     public int getPlayerId() {

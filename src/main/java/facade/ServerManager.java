@@ -38,7 +38,6 @@ public class ServerManager {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            System.out.println("Closing sockets.");
             if (ss != null) {
                 ss.close();
             }

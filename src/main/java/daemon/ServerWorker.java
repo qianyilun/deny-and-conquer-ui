@@ -36,17 +36,13 @@ public class ServerWorker implements Runnable {
 
     @Override
     public void run() {
-        OutputStream outputStream = null;
+        OutputStream outputStream;
         try {
             outputStream = socket.getOutputStream();
-            // create a DataInputStream so we can read data from it.
             ObjectOutputStream objectInputStream = new ObjectOutputStream(outputStream);
-
-            // read the content from the socket
             objectInputStream.writeObject(configurationDTO);
 
-            System.out.println(configurationDTO);
-
+            System.out.println("Closing sockets.");
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();

@@ -8,14 +8,14 @@ import model.LocalStatus;
 import model.PlayerDTO;
 import ui.canvas.MainCanvas;
 import ui.register.Main;
-import ui.register.model.BoxModel;
 import ui.register.model.CanvasModel;
 
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LoginService {
@@ -31,32 +31,41 @@ public class LoginService {
 
         // TODO: move to independent class
         InetAddress serverIp = InetAddress.getByName("192.168.0.16");
-
-
         Socket clientSocket = new Socket("192.168.0.16", 7777);
-        System.out.println("Connected!");
 
-
-        // get the output stream from the socket.
-        OutputStream outputStream = clientSocket.getOutputStream();
-        // create an object output stream from the output stream so we can send an object through it
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-
+        // write object.
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
         objectOutputStream.writeObject(playerDTO);
 
+        // read object
         ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
-
         ConfigurationDTO configurationDTO = (ConfigurationDTO) objectInputStream.readObject();
 
+        // set values based on the received object
+        setServerIPInGlobalStatus(configurationDTO);
+        setPlayerDTOInGlobalStatus(configurationDTO);
         System.out.println(configurationDTO);
 
         GlobalStatus.getInstance().setConfigurationDTO(configurationDTO);
-
         prepareCanvasDataForClient();
 
+        // launch game UI
         launchCanvas();
 
         return true;
+    }
+
+    private void setPlayerDTOInGlobalStatus(ConfigurationDTO configurationDTO) {
+        GlobalStatus.getInstance().setPlayerDTOS(configurationDTO.getPlayerDTOList());
+    }
+
+    private void setServerIPInGlobalStatus(ConfigurationDTO configurationDTO) {
+        List<PlayerDTO> playerDTOS = configurationDTO.getPlayerDTOList();
+        for (PlayerDTO playerDTO : playerDTOS) {
+            if (playerDTO.isServer()) {
+                GlobalStatus.getInstance().setServerIP(playerDTO.getPlayerIP());
+            }
+        }
     }
 
     public boolean setLocalColorToLocalStatus(Color color) {
@@ -79,7 +88,6 @@ public class LoginService {
             prepareCanvasDataForServer(hostName, thickness, row, percent);
             launchCanvas();
         }
-//        return true;
     }
 
     private void launchCanvas() throws IOException {
