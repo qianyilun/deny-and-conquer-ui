@@ -24,29 +24,21 @@ public class CanvasController {
     public Text playerNameLabel;
     public Text playerRankLabel;
     public ColorPicker colorPicker;
-//    public Slider penThickness;
-//    public TextArea boxRow;
     public Button readyBtn;
     public Button startBtn;
     public Text playerMachineLabel;
-//    public TextArea boxPercentToColor;
     public Label penSettingLabel;
-//    public Button setCanvasBtn;
     public GridPane canvasGridPane;
     public Canvas canvasTest;
 
     private boolean firstClickOnGrid = true;
 
     public void onSetCanvasBtnClicked(ActionEvent event) {
-
         drawCanvasGridPanel();
 
     }
 
     private void drawCanvasGridPanel() {
-        // set pen thickness - done in constructor
-//        canvasModel.setPenThickness(penThickness.getValue());
-
         CanvasModel canvasModel = CanvasModel.getInstance();
         // generate grids in gridPane
         int numRows = canvasModel.getRow();
@@ -67,7 +59,6 @@ public class CanvasController {
 
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numRows; j++) {
-                System.out.println(i + " " + j);
                 Canvas canvas = new Canvas();
                 canvas.setId("canvas" + i  + "-" + j);
 
@@ -75,8 +66,6 @@ public class CanvasController {
 
                 canvas.setWidth(width);
                 canvas.setHeight(width);
-
-                canvas.setOnMouseClicked((event -> System.out.println("clickedddd")));
 
                 drawBoxes(canvas, canvasModel);
 
@@ -91,7 +80,6 @@ public class CanvasController {
                 canvasGridPane.add(canvas, i, j);
             }
         }
-        System.out.println(canvasGridPane.getChildren().size());
     }
 
     // https://stackoverflow.com/questions/43429251/how-to-draw-a-continuous-line-with-mouse-on-javafx-canvas
@@ -127,8 +115,6 @@ public class CanvasController {
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
                             initDraw(graphicsContext);
                         }
-                        System.out.println(currentBoxModel.getBoxArea());
-                        System.out.println(currentBoxModel.getCanvas().getId() + ": " + currentBoxModel.getColoredArea());
                     }
                 });
     }
@@ -175,30 +161,6 @@ public class CanvasController {
 
     @FXML
     private void onReadyClicked(ActionEvent event) {
-//        System.out.println(ColorUtils.toAwtColor(colorPicker.getValue()));
-//        if (LocalStatus.getInstance().isInGame()) {
-//            return;
-//        }
-//
-//        String textOnBtn = readyBtn.getText();
-//        if (textOnBtn.equals("Ready")) {
-//            colorPicker.setDisable(true);
-//            penThickness.setDisable(true);
-//            boxRow.setDisable(true);
-//            boxRow.setDisable(true);
-//            boxPercentToColor.setDisable(true);
-//            setCanvasBtn.setDisable(true);
-//            readyBtn.setText("Cancel");
-//        } else {
-//            colorPicker.setDisable(false);
-//            penThickness.setDisable(false);
-//            boxRow.setDisable(false);
-//            boxRow.setDisable(false);
-//            boxPercentToColor.setDisable(false);
-//            setCanvasBtn.setDisable(false);
-//            readyBtn.setText("Ready");
-//        }
-//
     }
 
 
