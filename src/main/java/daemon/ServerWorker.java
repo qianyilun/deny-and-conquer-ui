@@ -17,14 +17,16 @@ public class ServerWorker implements Runnable {
     private int row;
     private int percent;
     private ConfigurationDTO configurationDTO;
+    private int id;
 
-    public ServerWorker(String threadName, Socket socket, List<Socket> socketList, int thickness, int row, int percent) {
-        this.threadName = threadName;
+    public ServerWorker(int id, Socket socket, List<Socket> socketList, int thickness, int row, int percent) {
+        this.threadName = "Thread-" + id;
         this.socket = socket;
         this.socketList = socketList;
         this.thickness = thickness;
         this.row = row;
         this.percent = percent;
+        this.id = id;
 
         init();
     }
@@ -46,6 +48,7 @@ public class ServerWorker implements Runnable {
     private PlayerDTO parsePlayerDTOFromSocket(Socket socket1) throws IOException, ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(socket1.getInputStream());
         PlayerDTO playerDTO = (PlayerDTO) objectInputStream.readObject();
+        playerDTO.setPlayerId(id);
         return playerDTO;
     }
 

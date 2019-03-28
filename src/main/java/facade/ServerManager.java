@@ -20,7 +20,7 @@ public class ServerManager {
             ss = new ServerSocket(7777);
             List<Socket> socketList = new ArrayList<>();
 
-            while (true) {
+            for (int i = 0; i < numOfPlayers; i++) {
                 Socket socket = ss.accept(); // blocking call, this will wait until a connection is attempted on this port.
 
                 // accepting new players
@@ -30,35 +30,23 @@ public class ServerManager {
                     System.out.println("ServerSocket awaiting connections...");
                     System.out.println("Connection from " + socket + "!");
 
-                    // get the input stream from the connected socket
-//                    InputStream inputStream = socket.getInputStream();
-//                    // create a DataInputStream so we can read data from it.
-//                    ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-//
-//                    // read the list of messages from the socket
-//
-//                    Player player = (Player) objectInputStream.readObject();
                     socketList.add(socket);
-//                    System.out.println("Received [" + player.toString() + "] messages from: " + socket);
                 }
 
-                // all players are arrived
-                if (requestCounter == numOfPlayers) {
-                    // trigger: game begin
-
-                    for (int i = 0; i < socketList.size(); i++) {
-                        // launch new thread to handle each request
-                        Socket playerSocket = socketList.get(i);
-                        ServerWorker worker = new ServerWorker("Thread-" + i, playerSocket, socketList, thickness, row, percent);
-                        worker.start();
-                    }
-                    return true;
-                }
-
-                if (requestCounter > numOfPlayers) {
-                    break;
-                }
             }
+
+            for (int i = 0; i < socketList.size(); i++) {
+                // launch new thread to handle each request
+                Socket playerSocket = socketList.get(i);
+                ServerWorker worker = new ServerWorker(i, playerSocket, socketList, thickness, row, percent);
+                worker.start();
+            }
+
+            for (int i = 0; i < socketList.size(); i++) {
+                socketList.get(i).close();
+            }
+
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
