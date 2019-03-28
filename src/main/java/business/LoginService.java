@@ -30,10 +30,10 @@ public class LoginService {
         PlayerDTO playerDTO = new PlayerDTO(addr.getHostAddress(), name, color);
 
         // TODO: move to independent class
-        InetAddress serverIp = InetAddress.getByName("192.168.0.15");
+        InetAddress serverIp = InetAddress.getByName("192.168.0.16");
 
 
-        Socket clientSocket = new Socket("192.168.0.15", 7777);
+        Socket clientSocket = new Socket("192.168.0.16", 7777);
         System.out.println("Connected!");
 
 
@@ -71,11 +71,12 @@ public class LoginService {
      *
      * @return
      */
-    public void launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row, int percent) throws IOException {
-        prepareCanvasDataForServer(hostName, thickness, row, percent);
-        boolean received = ServerManager.launch(numOfPlayers, thickness, row, percent);
+    public void launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row, int percent) throws IOException, ClassNotFoundException {
+        PlayerDTO hostPlayerDTO = new PlayerDTO(InetAddress.getLocalHost().getHostAddress(), hostName, LocalStatus.getInstance().getColor());
+        boolean received = ServerManager.launch(numOfPlayers, thickness, row, percent, hostPlayerDTO);
         if (received) {
             // game begin
+            prepareCanvasDataForServer(hostName, thickness, row, percent);
             launchCanvas();
         }
 //        return true;

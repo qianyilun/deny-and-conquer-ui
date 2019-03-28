@@ -1,49 +1,36 @@
 package facade;
 
 import daemon.ServerWorker;
+import model.PlayerDTO;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServerManager {
-    public static void main(String[] args) throws IOException {
-//        launch(1);
-    }
-
-    public static boolean launch(int numOfPlayers, int thickness, int row, int percent) throws IOException {
-        int requestCounter = 0;
+    public static boolean launch(int numOfPlayers, int thickness, int row, int percent, PlayerDTO hostPlayerDTO) throws IOException, ClassNotFoundException {
         ServerSocket ss = null;
         try {
             ss = new ServerSocket(7777);
-            List<Socket> socketList = new ArrayList<>();
+            List<PlayerDTO> playerDTOs = new ArrayList<>();
+            List<Socket> sockets = new ArrayList<>();
+
+            playerDTOs.add(hostPlayerDTO);
 
             for (int i = 0; i < numOfPlayers; i++) {
                 Socket socket = ss.accept(); // blocking call, this will wait until a connection is attempted on this port.
-
-                // accepting new players
-                if (requestCounter < numOfPlayers) {
-                    requestCounter++;
-
-                    System.out.println("ServerSocket awaiting connections...");
-                    System.out.println("Connection from " + socket + "!");
-
-                    socketList.add(socket);
-                }
-
+                PlayerDTO playerDTO = parsePlayerDTOFromSocket(socket, i);
+                playerDTOs.add(playerDTO);
+                sockets.add(socket);
             }
 
-            for (int i = 0; i < socketList.size(); i++) {
-                // launch new thread to handle each request
-                Socket playerSocket = socketList.get(i);
-                ServerWorker worker = new ServerWorker(i, playerSocket, socketList, thickness, row, percent);
+            for (int i = 0; i < numOfPlayers; i++) {
+                Socket socket = sockets.get(i);
+                ServerWorker worker = new ServerWorker(i, socket, playerDTOs, thickness, row, percent);
                 worker.start();
-            }
-
-            for (int i = 0; i < socketList.size(); i++) {
-                socketList.get(i).close();
             }
 
             return true;
@@ -56,5 +43,12 @@ public class ServerManager {
             }
         }
         return false;
+    }
+
+    private static PlayerDTO parsePlayerDTOFromSocket(Socket socket, int id) throws IOException, ClassNotFoundException {
+        ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+        PlayerDTO playerDTO = (PlayerDTO) objectInputStream.readObject();
+        playerDTO.setPlayerId(id);
+        return playerDTO;
     }
 }

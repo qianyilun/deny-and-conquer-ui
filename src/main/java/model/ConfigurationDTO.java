@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class ConfigurationDTO implements Serializable {
     private List<PlayerDTO> playerDTOList;
+
     private int thickness;
     private int rows;
     private int percent;

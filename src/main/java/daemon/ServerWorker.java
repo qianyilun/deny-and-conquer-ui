@@ -5,52 +5,34 @@ import model.PlayerDTO;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ServerWorker implements Runnable {
     private Thread t;
-    private String threadName;
+    private String threadId;
     private Socket socket; // the socket that this worker currently connects to
-    private List<Socket> socketList; // all players information, for backup, exclude configurationDTO player's information
+    private List<PlayerDTO> playerDTOS; // all players information, for backup, exclude configurationDTO player's information
     private int thickness;
     private int row;
     private int percent;
     private ConfigurationDTO configurationDTO;
-    private int id;
 
-    public ServerWorker(int id, Socket socket, List<Socket> socketList, int thickness, int row, int percent) {
-        this.threadName = "Thread-" + id;
+    public ServerWorker(int threadId, Socket socket, List<PlayerDTO> playerDTOS, int thickness, int row, int percent) {
+        this.threadId = "Thread-" + threadId;
         this.socket = socket;
-        this.socketList = socketList;
+        this.playerDTOS = playerDTOS;
         this.thickness = thickness;
         this.row = row;
         this.percent = percent;
-        this.id = id;
 
         init();
     }
 
     private void init() {
-        List<PlayerDTO> playerDTOList = new ArrayList<>();
-        for (Socket socket1 : socketList) {
-            try {
-                PlayerDTO playerDTO = parsePlayerDTOFromSocket(socket1);
-                playerDTOList.add(playerDTO);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println(playerDTOList);
-        configurationDTO = new ConfigurationDTO(playerDTOList, thickness, row, percent);
+        configurationDTO = new ConfigurationDTO(playerDTOS, thickness, row, percent);
     }
 
-    private PlayerDTO parsePlayerDTOFromSocket(Socket socket1) throws IOException, ClassNotFoundException {
-        ObjectInputStream objectInputStream = new ObjectInputStream(socket1.getInputStream());
-        PlayerDTO playerDTO = (PlayerDTO) objectInputStream.readObject();
-        playerDTO.setPlayerId(id);
-        return playerDTO;
-    }
+
 
     @Override
     public void run() {
@@ -65,7 +47,7 @@ public class ServerWorker implements Runnable {
 
             System.out.println(configurationDTO);
 
-
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,9 +55,8 @@ public class ServerWorker implements Runnable {
     }
 
     public void start() {
-        System.out.println("Starting " + threadName);
         if (t == null) {
-            t = new Thread(this, threadName);
+            t = new Thread(this, threadId);
             t.start();
         }
     }

@@ -32,6 +32,8 @@ public class PlayerDTO implements Serializable {
                 "playerIP='" + playerIP + '\'' +
                 ", playerName='" + playerName + '\'' +
                 ", playerColor=" + playerColor +
+                ", isServer=" + isServer +
+                ", playerId=" + playerId +
                 '}';
     }
 }
