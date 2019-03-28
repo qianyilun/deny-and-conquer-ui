@@ -62,7 +62,7 @@ public class RegisterController implements Initializable {
     }
 
     @FXML
-    private void onHostButtonClick(ActionEvent event) throws IOException {
+    private void onHostButtonClick(ActionEvent event) throws IOException, ClassNotFoundException {
         // get data from ui
         String hostName = hostNameText.getText();
         int numOfPlayer = Integer.parseInt(numOfPlayersText.getText());
