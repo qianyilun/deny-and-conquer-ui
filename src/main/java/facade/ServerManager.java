@@ -23,6 +23,7 @@ public class ServerManager {
             for (int i = 0; i < numOfPlayers; i++) {
                 Socket socket = ss.accept(); // blocking call, this will wait until a connection is attempted on this port.
                 PlayerDTO playerDTO = parsePlayerDTOFromSocket(socket, i);
+                playerDTO.setPlayerId(i+1); // host player will be with id = 0
                 playerDTOs.add(playerDTO);
                 sockets.add(socket);
             }
