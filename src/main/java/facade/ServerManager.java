@@ -1,6 +1,7 @@
 package facade;
 
 import daemon.ServerWorker;
+import model.LocalStatus;
 import model.dto.PlayerDTO;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class ServerManager {
         ServerSocket ss = null;
         try {
             ss = new ServerSocket(7777);
+            LocalStatus.getInstance().setServerSocket(ss);
             List<PlayerDTO> playerDTOs = new ArrayList<>();
             List<Socket> sockets = new ArrayList<>();
 
@@ -39,7 +41,7 @@ public class ServerManager {
             e.printStackTrace();
         } finally {
             if (ss != null) {
-                ss.close();
+//                ss.close();
             }
         }
         return false;

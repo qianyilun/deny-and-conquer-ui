@@ -5,6 +5,7 @@ import model.dto.PlayerDTO;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class SocketIOUtils {
@@ -23,10 +24,7 @@ public class SocketIOUtils {
         try {
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             return objectInputStream.readObject();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;

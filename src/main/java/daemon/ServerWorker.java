@@ -7,6 +7,7 @@ import model.dto.PlayerDTO;
 import utils.SocketIOUtils;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 import java.util.Locale;
@@ -53,9 +54,10 @@ public class ServerWorker implements Runnable {
 
     }
 
-    private void launchGameStatusHandler() {
+    private void launchGameStatusHandler() throws IOException {
+        ServerSocket serverSocket = LocalStatus.getInstance().getServerSocket();
         while (true) {
-            Socket socket = LocalStatus.getInstance().getSocketBetweenThisMachineAndServer();
+            Socket socket = serverSocket.accept();
             Object object = SocketIOUtils.readObjectFromSocket(socket);
 
             if (object.getClass().equals(ColoredBoxDTO.class.getName())) {
