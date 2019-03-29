@@ -3,6 +3,7 @@ package model;
 import ui.register.model.CanvasModel;
 
 import java.awt.Color;
+import java.net.Socket;
 
 public class LocalStatus {
     private static LocalStatus ourInstance = new LocalStatus();
@@ -10,6 +11,7 @@ public class LocalStatus {
     private boolean isHost = false;
     private CanvasModel canvasModel;
     private Color color;
+    private Socket socketBetweenThisMachineAndServer;
 
     public static LocalStatus getInstance() {
         return ourInstance;
@@ -56,5 +58,13 @@ public class LocalStatus {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public Socket getSocketBetweenThisMachineAndServer() {
+        return socketBetweenThisMachineAndServer;
+    }
+
+    public void setSocketBetweenThisMachineAndServer(Socket socketBetweenThisMachineAndServer) {
+        this.socketBetweenThisMachineAndServer = socketBetweenThisMachineAndServer;
     }
 }

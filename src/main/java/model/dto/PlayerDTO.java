@@ -1,4 +1,6 @@
-package model;
+package model.dto;
+
+import model.LocalStatus;
 
 import java.awt.*;
 import java.io.Serializable;

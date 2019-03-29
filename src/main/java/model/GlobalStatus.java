@@ -1,5 +1,8 @@
 package model;
 
+import model.dto.ConfigurationDTO;
+import model.dto.PlayerDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 

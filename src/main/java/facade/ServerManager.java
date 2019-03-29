@@ -1,7 +1,7 @@
 package facade;
 
 import daemon.ServerWorker;
-import model.PlayerDTO;
+import model.dto.PlayerDTO;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

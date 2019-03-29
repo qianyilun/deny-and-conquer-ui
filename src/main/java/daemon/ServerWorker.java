@@ -1,7 +1,7 @@
 package daemon;
 
-import model.ConfigurationDTO;
-import model.PlayerDTO;
+import model.dto.ConfigurationDTO;
+import model.dto.PlayerDTO;
 
 import java.io.*;
 import java.net.Socket;
@@ -41,9 +41,6 @@ public class ServerWorker implements Runnable {
             outputStream = socket.getOutputStream();
             ObjectOutputStream objectInputStream = new ObjectOutputStream(outputStream);
             objectInputStream.writeObject(configurationDTO);
-
-            System.out.println("Closing sockets.");
-            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

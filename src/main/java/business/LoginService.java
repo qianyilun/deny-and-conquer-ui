@@ -2,10 +2,10 @@ package business;
 
 import facade.ServerManager;
 import javafx.stage.Stage;
-import model.ConfigurationDTO;
+import model.dto.ConfigurationDTO;
 import model.GlobalStatus;
 import model.LocalStatus;
-import model.PlayerDTO;
+import model.dto.PlayerDTO;
 import ui.canvas.MainCanvas;
 import ui.register.Main;
 import ui.register.model.CanvasModel;
@@ -32,6 +32,9 @@ public class LoginService {
         // TODO: move to independent class
         InetAddress serverIp = InetAddress.getByName("192.168.0.16");
         Socket clientSocket = new Socket("192.168.0.16", 7777);
+
+        // save the connection socket
+        LocalStatus.getInstance().setSocketBetweenThisMachineAndServer(clientSocket);
 
         // write object.
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
