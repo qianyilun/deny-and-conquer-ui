@@ -1,8 +1,9 @@
 package facade;
 
 import daemon.ServerWorker;
-import model.LocalStatus;
+import model.status.game.LocalStatus;
 import model.dto.PlayerDTO;
+import model.status.server_client.ServerStatus;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -16,7 +17,7 @@ public class ServerManager {
         ServerSocket ss = null;
         try {
             ss = new ServerSocket(7777);
-            LocalStatus.getInstance().setServerSocket(ss);
+            ServerStatus.getInstance().setServerSocket(ss);
             List<PlayerDTO> playerDTOs = new ArrayList<>();
             List<Socket> sockets = new ArrayList<>();
 

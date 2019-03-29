@@ -3,9 +3,9 @@ package business;
 import facade.ServerManager;
 import javafx.stage.Stage;
 import model.dto.ConfigurationDTO;
-import model.GlobalStatus;
-import model.LocalStatus;
+import model.status.game.LocalStatus;
 import model.dto.PlayerDTO;
+import model.status.server_client.ClientStatus;
 import ui.canvas.MainCanvas;
 import ui.register.Main;
 import ui.register.model.CanvasModel;
@@ -46,10 +46,10 @@ public class LoginService {
 
         // set values based on the received object
         setServerIPInGlobalStatus(configurationDTO);
-        setPlayerDTOInGlobalStatus(configurationDTO);
+        savePlayerDTOInStatus(configurationDTO);
         System.out.println(configurationDTO);
 
-        GlobalStatus.getInstance().setConfigurationDTO(configurationDTO);
+        ClientStatus.getInstance().setConfigurationDTO(configurationDTO);
         prepareCanvasDataForClient();
 
         // launch game UI
@@ -58,15 +58,15 @@ public class LoginService {
         return true;
     }
 
-    private void setPlayerDTOInGlobalStatus(ConfigurationDTO configurationDTO) {
-        GlobalStatus.getInstance().setPlayerDTOS(configurationDTO.getPlayerDTOList());
+    private void savePlayerDTOInStatus(ConfigurationDTO configurationDTO) {
+        ClientStatus.getInstance().setPlayerDTOS(configurationDTO.getPlayerDTOList());
     }
 
     private void setServerIPInGlobalStatus(ConfigurationDTO configurationDTO) {
         List<PlayerDTO> playerDTOS = configurationDTO.getPlayerDTOList();
         for (PlayerDTO playerDTO : playerDTOS) {
             if (playerDTO.isServer()) {
-                GlobalStatus.getInstance().setServerIP(playerDTO.getPlayerIP());
+                ClientStatus.getInstance().setServerIP(playerDTO.getPlayerIP());
             }
         }
     }
@@ -101,16 +101,18 @@ public class LoginService {
 
     public void prepareCanvasDataForServer(String hostName, int thickness, int row, int percent) {
         java.awt.Color color = LocalStatus.getInstance().getColor();
-        CanvasModel.getInstance().initFields(row, percent, thickness, color);
+        CanvasModel canvasModel = LocalStatus.getInstance().getCanvasModel();
+        canvasModel.initFields(row, percent, thickness, color);
     }
 
     private void prepareCanvasDataForClient() {
-        ConfigurationDTO configurationDTO = GlobalStatus.getInstance().getConfigurationDTO();
+        ConfigurationDTO configurationDTO = ClientStatus.getInstance().getConfigurationDTO();
         int row = configurationDTO.getRows();
         int percent = configurationDTO.getPercent();
         int thickness = configurationDTO.getThickness();
         java.awt.Color color = LocalStatus.getInstance().getColor();
 
-        CanvasModel.getInstance().initFields(row, percent, thickness, color);
+        CanvasModel canvasModel = LocalStatus.getInstance().getCanvasModel();
+        canvasModel.initFields(row, percent, thickness, color);
     }
 }
