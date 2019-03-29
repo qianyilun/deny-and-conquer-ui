@@ -14,7 +14,7 @@ public class LocalStatus {
     private static LocalStatus ourInstance = new LocalStatus();
     private boolean isInGame = false;
     private boolean isHost = false;
-    private CanvasModel canvasModel;
+
     private Color color;
     private Socket socketBetweenThisMachineAndServer;
 
@@ -24,14 +24,6 @@ public class LocalStatus {
     }
 
     private LocalStatus() {
-    }
-
-    public CanvasModel getCanvasModel() {
-        return canvasModel;
-    }
-
-    public void setCanvasModel(CanvasModel canvasModel) {
-        this.canvasModel = canvasModel;
     }
 
     public static LocalStatus getOurInstance() {

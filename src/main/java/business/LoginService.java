@@ -1,8 +1,10 @@
 package business;
 
 import facade.ServerManager;
+import facade.ServiceManager;
 import javafx.stage.Stage;
 import model.dto.ConfigurationDTO;
+import model.status.game.GameStatus;
 import model.status.game.LocalStatus;
 import model.dto.PlayerDTO;
 import model.status.server_client.ClientStatus;
@@ -55,6 +57,10 @@ public class LoginService {
         // launch game UI
         launchCanvas();
 
+        ServiceManager.getGameService().listenForGameUpdatesFromServer();
+
+        System.out.println("can you see this time?");
+
         return true;
     }
 
@@ -102,7 +108,7 @@ public class LoginService {
     public void prepareCanvasDataForServer(String hostName, int thickness, int row, int percent) {
         java.awt.Color color = LocalStatus.getInstance().getColor();
         CanvasModel canvasModel = new CanvasModel(row, percent, thickness, color);
-        LocalStatus.getInstance().setCanvasModel(canvasModel);
+        GameStatus.getInstance().setCanvasModel(canvasModel);
     }
 
     private void prepareCanvasDataForClient() {
@@ -113,6 +119,6 @@ public class LoginService {
         java.awt.Color color = LocalStatus.getInstance().getColor();
 
         CanvasModel canvasModel = new CanvasModel(row, percent, thickness, color);
-        LocalStatus.getInstance().setCanvasModel(canvasModel);
+        GameStatus.getInstance().setCanvasModel(canvasModel);
     }
 }

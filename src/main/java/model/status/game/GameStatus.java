@@ -1,5 +1,7 @@
 package model.status.game;
 
+import ui.register.model.CanvasModel;
+
 /**
  * This class is for save all status in the middle of the game (canvas UI)
  */
@@ -12,5 +14,15 @@ public class GameStatus {
     }
 
     private GameStatus() {
+    }
+
+    private CanvasModel canvasModel;
+
+    public synchronized CanvasModel getCanvasModel() {
+        return canvasModel;
+    }
+
+    public synchronized void setCanvasModel(CanvasModel canvasModel) {
+        this.canvasModel = canvasModel;
     }
 }
