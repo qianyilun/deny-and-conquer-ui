@@ -114,7 +114,7 @@ public class CanvasController {
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
 
 
-                            ServiceManager.getGameService().sendColoredBoxIdToServer(currentBoxModel);
+                            ServiceManager.getGameService().sendColorBoxWithBoxIdCommandToServer(currentBoxModel);
                         } else {
                             // color it back to white
                             graphicsContext.setFill(Color.WHITE);

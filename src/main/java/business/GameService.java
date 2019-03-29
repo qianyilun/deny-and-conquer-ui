@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class GameService {
-    public void sendColoredBoxIdToServer(BoxModel boxModel) {
+    public void sendColorBoxWithBoxIdCommandToServer(BoxModel boxModel) {
         Socket socket = LocalStatus.getInstance().getSocketBetweenThisMachineAndServer();
         String boxId = boxModel.getCanvas().getId();
         ColoredBoxDTO coloredBoxDTO = new ColoredBoxDTO(boxId);
