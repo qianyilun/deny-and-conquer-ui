@@ -1,11 +1,15 @@
 package daemon;
 
+import model.LocalStatus;
+import model.dto.ColoredBoxDTO;
 import model.dto.ConfigurationDTO;
 import model.dto.PlayerDTO;
+import utils.SocketIOUtils;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
+import java.util.Locale;
 
 public class ServerWorker implements Runnable {
     private Thread t;
@@ -41,10 +45,24 @@ public class ServerWorker implements Runnable {
             outputStream = socket.getOutputStream();
             ObjectOutputStream objectInputStream = new ObjectOutputStream(outputStream);
             objectInputStream.writeObject(configurationDTO);
+
+            launchGameStatusHandler();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void launchGameStatusHandler() {
+        while (true) {
+            Socket socket = LocalStatus.getInstance().getSocketBetweenThisMachineAndServer();
+            Object object = SocketIOUtils.readObjectFromSocket(socket);
+
+            if (object.getClass().equals(ColoredBoxDTO.class.getName())) {
+                ColoredBoxDTO coloredBoxDTO = (ColoredBoxDTO) object;
+                System.out.println("color the box " + coloredBoxDTO.getBoxId() + " by color " + coloredBoxDTO.getColor());
+            }
+        }
     }
 
     public void start() {

@@ -1,5 +1,6 @@
 package ui.canvas.controller;
 
+import facade.ServiceManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -60,7 +61,7 @@ public class CanvasController {
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numRows; j++) {
                 Canvas canvas = new Canvas();
-                canvas.setId("canvas" + i  + "-" + j);
+                canvas.setId("id: " + i  + "-" + j);
 
                 canvas.autosize();
 
@@ -108,9 +109,14 @@ public class CanvasController {
                     public void handle(MouseEvent event) {
                         BoxModel currentBoxModel = determineCurrentBoxModel(event, canvasModel);
                         if (currentBoxModel.getColoredArea() >= (double) canvasModel.getPenThickness() / 100 * currentBoxModel.getBoxArea() ) {
-                            graphicsContext.setFill(ColorUtils.toFxColor(canvasModel.getColor())/*colorPicker.getValue()*/);
+                            // colored it all when area is enough
+                            graphicsContext.setFill(ColorUtils.toFxColor(canvasModel.getColor()));
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
+
+
+                            ServiceManager.getGameService().sendColoredBoxIdToServer(currentBoxModel);
                         } else {
+                            // color it back to white
                             graphicsContext.setFill(Color.WHITE);
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
                             initDraw(graphicsContext);
