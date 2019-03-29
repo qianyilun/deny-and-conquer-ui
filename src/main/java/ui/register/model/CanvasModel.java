@@ -11,7 +11,7 @@ public class CanvasModel {
     private int penThickness;
     private Color color;
 
-    public void initFields(int row, int percent, int penThickness, Color color) {
+    public CanvasModel(int row, int percent, int penThickness, Color color) {
         this.row = row;
         this.percent = percent;
         this.boxes = new ArrayList<>(row * row);

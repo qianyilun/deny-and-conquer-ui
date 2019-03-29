@@ -101,8 +101,8 @@ public class LoginService {
 
     public void prepareCanvasDataForServer(String hostName, int thickness, int row, int percent) {
         java.awt.Color color = LocalStatus.getInstance().getColor();
-        CanvasModel canvasModel = LocalStatus.getInstance().getCanvasModel();
-        canvasModel.initFields(row, percent, thickness, color);
+        CanvasModel canvasModel = new CanvasModel(row, percent, thickness, color);
+        LocalStatus.getInstance().setCanvasModel(canvasModel);
     }
 
     private void prepareCanvasDataForClient() {
@@ -112,7 +112,7 @@ public class LoginService {
         int thickness = configurationDTO.getThickness();
         java.awt.Color color = LocalStatus.getInstance().getColor();
 
-        CanvasModel canvasModel = LocalStatus.getInstance().getCanvasModel();
-        canvasModel.initFields(row, percent, thickness, color);
+        CanvasModel canvasModel = new CanvasModel(row, percent, thickness, color);
+        LocalStatus.getInstance().setCanvasModel(canvasModel);
     }
 }
