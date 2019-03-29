@@ -7,6 +7,8 @@ public class BoxModel {
     private double boxArea;
     private double boxX;
     private double boxY;
+    private boolean isColored;
+    private boolean isLocked;
     private Canvas canvas;
 
     public BoxModel(double boxArea) {
@@ -55,5 +57,34 @@ public class BoxModel {
 
     public void setBoxArea(double boxArea) {
         this.boxArea = boxArea;
+    }
+
+    public boolean isColored() {
+        return isColored;
+    }
+
+    public void setColored(boolean colored) {
+        isColored = colored;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    @Override
+    public String toString() {
+        return "BoxModel{" +
+                "coloredArea=" + coloredArea +
+                ", boxArea=" + boxArea +
+                ", boxX=" + boxX +
+                ", boxY=" + boxY +
+                ", isColored=" + isColored +
+                ", isLocked=" + isLocked +
+                ", canvas=" + canvas +
+                '}';
     }
 }
