@@ -47,14 +47,14 @@ public class ServerWorker implements Runnable {
             ObjectOutputStream objectInputStream = new ObjectOutputStream(outputStream);
             objectInputStream.writeObject(configurationDTO);
 
-            launchGameStatusHandler();
+            launchGameStatusReceiver();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void launchGameStatusHandler() throws IOException {
+    private void launchGameStatusReceiver() throws IOException {
         while (true) {
             Object object = SocketIOUtils.readObjectFromSocket(socket);
 
@@ -64,6 +64,10 @@ public class ServerWorker implements Runnable {
                 ServiceManager.getGameService().colorBoxWithBoxId(coloredBoxDTO);
             }
         }
+    }
+
+    public void sendUpdatedGameStatusToClient() {
+        System.out.println("Can you see");
     }
 
     public void start() {
