@@ -5,15 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CanvasModel {
-    private static CanvasModel ourInstance = new CanvasModel();
-
-    public static CanvasModel getInstance() {
-        return ourInstance;
-    }
-
-    private CanvasModel() {
-    }
-
     private int row;
     private int percent;
     private List<BoxModel> boxes;

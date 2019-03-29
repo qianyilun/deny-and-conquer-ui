@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.status.game.LocalStatus;
 import ui.register.model.BoxModel;
 import ui.register.model.CanvasModel;
 import utils.ColorUtils;
@@ -31,6 +32,7 @@ public class CanvasController {
     public Label penSettingLabel;
     public GridPane canvasGridPane;
     public Canvas canvasTest;
+    private CanvasModel canvasModel = LocalStatus.getInstance().getCanvasModel();
 
     private boolean firstClickOnGrid = true;
 
@@ -40,7 +42,6 @@ public class CanvasController {
     }
 
     private void drawCanvasGridPanel() {
-        CanvasModel canvasModel = CanvasModel.getInstance();
         // generate grids in gridPane
         int numRows = canvasModel.getRow();
         for (int i = 0; i < numRows; i++) {
@@ -68,7 +69,7 @@ public class CanvasController {
                 canvas.setWidth(width);
                 canvas.setHeight(width);
 
-                drawBoxes(canvas, canvasModel);
+                drawBoxes(canvas);
 
                 BoxModel boxModel = new BoxModel(boxArea);
                 boxModel.setCanvas(canvas);
@@ -84,7 +85,7 @@ public class CanvasController {
     }
 
     // https://stackoverflow.com/questions/43429251/how-to-draw-a-continuous-line-with-mouse-on-javafx-canvas
-    private void drawBoxes(Canvas canvas, CanvasModel canvasModel) {
+    private void drawBoxes(Canvas canvas) {
         final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         initDraw(graphicsContext);
 
@@ -99,7 +100,7 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
-                        colorPixels(event, graphicsContext, canvasModel);
+                        colorPixels(event, graphicsContext);
                     }
                 });
 
@@ -107,7 +108,7 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
-                        BoxModel currentBoxModel = determineCurrentBoxModel(event, canvasModel);
+                        BoxModel currentBoxModel = determineCurrentBoxModel(event);
                         if (currentBoxModel.getColoredArea() >= (double) canvasModel.getPenThickness() / 100 * currentBoxModel.getBoxArea() ) {
                             // colored it all when area is enough
                             graphicsContext.setFill(ColorUtils.toFxColor(canvasModel.getColor()));
@@ -133,8 +134,8 @@ public class CanvasController {
                 && y >= currentBoxModel.getBoxY() && y <= currentBoxModel.getBoxY() + currentBoxModel.getCanvas().getHeight();
     }
 
-    private void colorPixels(MouseEvent event, GraphicsContext graphicsContext, CanvasModel canvasModel) {
-        BoxModel currentBoxModel = determineCurrentBoxModel(event, canvasModel);
+    private void colorPixels(MouseEvent event, GraphicsContext graphicsContext) {
+        BoxModel currentBoxModel = determineCurrentBoxModel(event);
         if (!isWithinCurrentBox(currentBoxModel, event)) {
             return;
         }
@@ -190,7 +191,7 @@ public class CanvasController {
         gc.setLineWidth(1);
     }
 
-    private BoxModel determineCurrentBoxModel(MouseEvent event, CanvasModel canvasModel) {
+    private BoxModel determineCurrentBoxModel(MouseEvent event) {
         String canvasId = ((Canvas) event.getSource()).getId();
         for (BoxModel boxModel : canvasModel.getBoxes()) {
             if (canvasId.equals(boxModel.getCanvas().getId())) {
