@@ -1,10 +1,14 @@
-package model;
+package model.status.game;
 
 import ui.register.model.CanvasModel;
 
 import java.awt.Color;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+/**
+ * This class is used for save all necessary information of this particular player (e.g. Player Allen)
+ */
 
 public class LocalStatus {
     private static LocalStatus ourInstance = new LocalStatus();
@@ -13,7 +17,7 @@ public class LocalStatus {
     private CanvasModel canvasModel;
     private Color color;
     private Socket socketBetweenThisMachineAndServer;
-    private ServerSocket serverSocket;
+
 
     public static LocalStatus getInstance() {
         return ourInstance;
@@ -70,11 +74,5 @@ public class LocalStatus {
         this.socketBetweenThisMachineAndServer = socketBetweenThisMachineAndServer;
     }
 
-    public ServerSocket getServerSocket() {
-        return serverSocket;
-    }
 
-    public void setServerSocket(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
-    }
 }

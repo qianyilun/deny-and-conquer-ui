@@ -9,7 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
-import model.LocalStatus;
+import model.status.game.LocalStatus;
 import utils.ColorUtils;
 
 import java.awt.*;

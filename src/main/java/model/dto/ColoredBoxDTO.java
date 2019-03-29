@@ -1,6 +1,6 @@
 package model.dto;
 
-import model.LocalStatus;
+import model.status.game.LocalStatus;
 
 import java.awt.*;
 import java.io.Serializable;
