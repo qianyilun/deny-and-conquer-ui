@@ -114,8 +114,10 @@ public class CanvasController {
                             graphicsContext.setFill(ColorUtils.toFxColor(canvasModel.getColor()));
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
 
+                            if (!LocalStatus.getInstance().isHost()) {
+                                ServiceManager.getGameService().sendColorBoxWithBoxIdCommandToServer(currentBoxModel);
+                            }
 
-                            ServiceManager.getGameService().sendColorBoxWithBoxIdCommandToServer(currentBoxModel);
                         } else {
                             // color it back to white
                             graphicsContext.setFill(Color.WHITE);
