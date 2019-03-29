@@ -19,23 +19,30 @@ public class ServerManager {
             ss = new ServerSocket(7777);
             ServerStatus.getInstance().setServerSocket(ss);
             List<PlayerDTO> playerDTOs = new ArrayList<>();
-            List<Socket> sockets = new ArrayList<>();
+            List<Socket> clientSocketList = new ArrayList<>();
+            List<ServerWorker> threadWorkerList = new ArrayList<>();
 
+            // add host player's info
             playerDTOs.add(hostPlayerDTO);
 
+            // waiting for incoming players
             for (int i = 0; i < numOfPlayers; i++) {
                 Socket socket = ss.accept(); // blocking call, this will wait until a connection is attempted on this port.
                 PlayerDTO playerDTO = parsePlayerDTOFromSocket(socket, i);
                 playerDTO.setPlayerId(i+1); // host player will be with id = 0
                 playerDTOs.add(playerDTO);
-                sockets.add(socket);
+                clientSocketList.add(socket);
             }
 
+            // handle socket communication between server and all clients
             for (int i = 0; i < numOfPlayers; i++) {
-                Socket socket = sockets.get(i);
+                Socket socket = clientSocketList.get(i);
                 ServerWorker worker = new ServerWorker(i, socket, playerDTOs, thickness, row, percent);
+                threadWorkerList.add(worker);
                 worker.start();
             }
+
+            ServerStatus.getInstance().setWorkerList(threadWorkerList);
 
             return true;
         } catch (IOException e) {
