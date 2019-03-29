@@ -57,10 +57,9 @@ public class ServerWorker implements Runnable {
     private void launchGameStatusHandler() throws IOException {
         ServerSocket serverSocket = LocalStatus.getInstance().getServerSocket();
         while (true) {
-            Socket socket = serverSocket.accept();
             Object object = SocketIOUtils.readObjectFromSocket(socket);
 
-            if (object.getClass().equals(ColoredBoxDTO.class.getName())) {
+            if (object.getClass().equals(ColoredBoxDTO.class)) {
                 ColoredBoxDTO coloredBoxDTO = (ColoredBoxDTO) object;
                 System.out.println("color the box " + coloredBoxDTO.getBoxId() + " by color " + coloredBoxDTO.getColor());
             }
