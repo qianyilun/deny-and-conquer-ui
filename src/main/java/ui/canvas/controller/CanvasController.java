@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.status.game.GameStatus;
 import model.status.game.LocalStatus;
 import ui.register.model.BoxModel;
 import ui.register.model.CanvasModel;
@@ -32,7 +33,7 @@ public class CanvasController {
     public Label penSettingLabel;
     public GridPane canvasGridPane;
     public Canvas canvasTest;
-    private CanvasModel canvasModel = LocalStatus.getInstance().getCanvasModel();
+    private CanvasModel canvasModel = GameStatus.getInstance().getCanvasModel();
 
     private boolean firstClickOnGrid = true;
 
@@ -93,6 +94,8 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
+                        BoxModel currentBoxModel = determineCurrentBoxModel(event);
+                        currentBoxModel.setLocked(true);
                     }
                 });
 
@@ -111,15 +114,25 @@ public class CanvasController {
                         BoxModel currentBoxModel = determineCurrentBoxModel(event);
                         if (currentBoxModel.getColoredArea() >= (double) canvasModel.getPenThickness() / 100 * currentBoxModel.getBoxArea() ) {
                             // colored it all when area is enough
+                            currentBoxModel.setColored(true);
+
                             graphicsContext.setFill(ColorUtils.toFxColor(canvasModel.getColor()));
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
 
                             if (!LocalStatus.getInstance().isHost()) {
                                 ServiceManager.getGameService().sendColorBoxWithBoxIdCommandToServer(currentBoxModel);
+                            } else {
+//                                ServiceManager.getGameService().updateCanvasModelInGameStatus();
+                                ServiceManager.getGameService().sendNewGameStatusToAllClients();
                             }
+
+
+
 
                         } else {
                             // color it back to white
+                            currentBoxModel.setLocked(false);
+
                             graphicsContext.setFill(Color.WHITE);
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
                             initDraw(graphicsContext);
