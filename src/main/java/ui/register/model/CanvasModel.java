@@ -5,22 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CanvasModel {
-    private static CanvasModel ourInstance = new CanvasModel();
-
-    public static CanvasModel getInstance() {
-        return ourInstance;
-    }
-
-    private CanvasModel() {
-    }
-
     private int row;
     private int percent;
     private List<BoxModel> boxes;
     private int penThickness;
     private Color color;
 
-    public void initFields(int row, int percent, int penThickness, Color color) {
+    public CanvasModel(int row, int percent, int penThickness, Color color) {
         this.row = row;
         this.percent = percent;
         this.boxes = new ArrayList<>(row * row);

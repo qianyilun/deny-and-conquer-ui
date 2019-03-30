@@ -1,21 +1,24 @@
 package business;
 
+import daemon.ClientWorker;
 import facade.ServerManager;
+import facade.ServiceManager;
 import javafx.stage.Stage;
-import model.ConfigurationDTO;
-import model.GlobalStatus;
-import model.LocalStatus;
-import model.PlayerDTO;
+import model.dto.ConfigurationDTO;
+import model.status.game.GameStatus;
+import model.status.game.LocalStatus;
+import model.dto.PlayerDTO;
+import model.status.server_client.ClientStatus;
 import ui.canvas.MainCanvas;
 import ui.register.Main;
-import ui.register.model.BoxModel;
 import ui.register.model.CanvasModel;
 
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LoginService {
@@ -30,33 +33,49 @@ public class LoginService {
         PlayerDTO playerDTO = new PlayerDTO(addr.getHostAddress(), name, color);
 
         // TODO: move to independent class
-        InetAddress serverIp = InetAddress.getByName("192.168.0.15");
+        InetAddress serverIp = InetAddress.getByName("192.168.0.16");
+        Socket clientSocket = new Socket("192.168.0.16", 7777);
 
+        // save the connection socket
+        LocalStatus.socketBetweenThisMachineAndServer = clientSocket;
 
-        Socket clientSocket = new Socket("192.168.0.15", 7777);
-        System.out.println("Connected!");
-
-
-        // get the output stream from the socket.
-        OutputStream outputStream = clientSocket.getOutputStream();
-        // create an object output stream from the output stream so we can send an object through it
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-
+        // write object.
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
         objectOutputStream.writeObject(playerDTO);
 
+        // read object
         ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
-
         ConfigurationDTO configurationDTO = (ConfigurationDTO) objectInputStream.readObject();
 
+        // set values based on the received object
+        setServerIPInGlobalStatus(configurationDTO);
+        savePlayerDTOInStatus(configurationDTO);
         System.out.println(configurationDTO);
 
-        GlobalStatus.getInstance().setConfigurationDTO(configurationDTO);
-
+        ClientStatus.getInstance().setConfigurationDTO(configurationDTO);
         prepareCanvasDataForClient();
 
+        // launch game UI
         launchCanvas();
 
+        // listen
+        ClientWorker clientWorker = new ClientWorker();
+        clientWorker.listenForGameUpdatesFromServer();
+
         return true;
+    }
+
+    private void savePlayerDTOInStatus(ConfigurationDTO configurationDTO) {
+        ClientStatus.getInstance().setPlayerDTOS(configurationDTO.getPlayerDTOList());
+    }
+
+    private void setServerIPInGlobalStatus(ConfigurationDTO configurationDTO) {
+        List<PlayerDTO> playerDTOS = configurationDTO.getPlayerDTOList();
+        for (PlayerDTO playerDTO : playerDTOS) {
+            if (playerDTO.isServer()) {
+                ClientStatus.getInstance().setServerIP(playerDTO.getPlayerIP());
+            }
+        }
     }
 
     public boolean setLocalColorToLocalStatus(Color color) {
@@ -71,14 +90,14 @@ public class LoginService {
      *
      * @return
      */
-    public void launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row, int percent) throws IOException {
-        prepareCanvasDataForServer(hostName, thickness, row, percent);
-        boolean received = ServerManager.launch(numOfPlayers, thickness, row, percent);
+    public void launchGameConfigurationWorker(String hostName, int numOfPlayers, int thickness, int row, int percent) throws IOException, ClassNotFoundException {
+        PlayerDTO hostPlayerDTO = new PlayerDTO(InetAddress.getLocalHost().getHostAddress(), hostName, LocalStatus.getInstance().getColor());
+        boolean received = ServerManager.launch(numOfPlayers, thickness, row, percent, hostPlayerDTO);
         if (received) {
             // game begin
+            prepareCanvasDataForServer(hostName, thickness, row, percent);
             launchCanvas();
         }
-//        return true;
     }
 
     private void launchCanvas() throws IOException {
@@ -89,16 +108,18 @@ public class LoginService {
 
     public void prepareCanvasDataForServer(String hostName, int thickness, int row, int percent) {
         java.awt.Color color = LocalStatus.getInstance().getColor();
-        CanvasModel.getInstance().initFields(row, percent, thickness, color);
+        CanvasModel canvasModel = new CanvasModel(row, percent, thickness, color);
+        GameStatus.getInstance().setCanvasModel(canvasModel);
     }
 
     private void prepareCanvasDataForClient() {
-        ConfigurationDTO configurationDTO = GlobalStatus.getInstance().getConfigurationDTO();
+        ConfigurationDTO configurationDTO = ClientStatus.getInstance().getConfigurationDTO();
         int row = configurationDTO.getRows();
         int percent = configurationDTO.getPercent();
         int thickness = configurationDTO.getThickness();
         java.awt.Color color = LocalStatus.getInstance().getColor();
 
-        CanvasModel.getInstance().initFields(row, percent, thickness, color);
+        CanvasModel canvasModel = new CanvasModel(row, percent, thickness, color);
+        GameStatus.getInstance().setCanvasModel(canvasModel);
     }
 }

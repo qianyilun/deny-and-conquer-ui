@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import model.status.game.LocalStatus;
 import utils.ColorUtils;
 
 import java.awt.*;
@@ -61,13 +62,19 @@ public class RegisterController implements Initializable {
     }
 
     @FXML
-    private void onHostButtonClick(ActionEvent event) throws IOException {
+    private void onHostButtonClick(ActionEvent event) throws IOException, ClassNotFoundException {
+        // get data from ui
         String hostName = hostNameText.getText();
         int numOfPlayer = Integer.parseInt(numOfPlayersText.getText());
         int thickness = (int) thicknessChoiceBox.getValue();
         int row = Integer.parseInt(numOfRowText.getText());
         int percent = Integer.parseInt(percentageText.getText());
         Color awtColor = ColorUtils.toAwtColor(serverColorPicker.getValue());
+
+        // set local status, this machine is server/host now
+        LocalStatus.getInstance().setHost(true);
+
+        // behavior as a server
         ServiceManager.getLoginService().setLocalColorToLocalStatus(awtColor);
         ServiceManager.getLoginService().launchGameConfigurationWorker(hostName, numOfPlayer, thickness, row, percent);
     }

@@ -1,27 +1,31 @@
 package daemon;
 
-import model.ConfigurationDTO;
-import model.PlayerDTO;
+import facade.ServerManager;
+import facade.ServiceManager;
+import model.dto.*;
+import model.status.game.LocalStatus;
+import ui.register.model.BoxModel;
+import utils.SocketIOUtils;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ServerWorker implements Runnable {
     private Thread t;
-    private String threadName;
+    private String threadId;
     private Socket socket; // the socket that this worker currently connects to
-    private List<Socket> socketList; // all players information, for backup, exclude configurationDTO player's information
+    private List<PlayerDTO> playerDTOS; // all players information, for backup, exclude configurationDTO player's information
     private int thickness;
     private int row;
     private int percent;
     private ConfigurationDTO configurationDTO;
 
-    public ServerWorker(String threadName, Socket socket, List<Socket> socketList, int thickness, int row, int percent) {
-        this.threadName = threadName;
+    public ServerWorker(int threadId, Socket socket, List<PlayerDTO> playerDTOS, int thickness, int row, int percent) {
+        this.threadId = "Thread-" + threadId;
         this.socket = socket;
-        this.socketList = socketList;
+        this.playerDTOS = playerDTOS;
         this.thickness = thickness;
         this.row = row;
         this.percent = percent;
@@ -30,49 +34,68 @@ public class ServerWorker implements Runnable {
     }
 
     private void init() {
-        List<PlayerDTO> playerDTOList = new ArrayList<>();
-        for (Socket socket1 : socketList) {
-            try {
-                PlayerDTO playerDTO = parsePlayerDTOFromSocket(socket1);
-                playerDTOList.add(playerDTO);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println(playerDTOList);
-        configurationDTO = new ConfigurationDTO(playerDTOList, thickness, row, percent);
+        configurationDTO = new ConfigurationDTO(playerDTOS, thickness, row, percent);
     }
 
-    private PlayerDTO parsePlayerDTOFromSocket(Socket socket1) throws IOException, ClassNotFoundException {
-        ObjectInputStream objectInputStream = new ObjectInputStream(socket1.getInputStream());
-        PlayerDTO playerDTO = (PlayerDTO) objectInputStream.readObject();
-        return playerDTO;
-    }
+
 
     @Override
     public void run() {
-        OutputStream outputStream = null;
+        OutputStream outputStream;
         try {
             outputStream = socket.getOutputStream();
-            // create a DataInputStream so we can read data from it.
             ObjectOutputStream objectInputStream = new ObjectOutputStream(outputStream);
-
-            // read the content from the socket
             objectInputStream.writeObject(configurationDTO);
 
-            System.out.println(configurationDTO);
-
-
+            launchGameStatusReceiver();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
+    private void launchGameStatusReceiver() throws IOException {
+        while (true) {
+            Object object = SocketIOUtils.readObjectFromSocket(socket);
+
+            if (object.getClass().equals(ColoredBoxDTO.class)) {
+                ColoredBoxDTO coloredBoxDTO = (ColoredBoxDTO) object;
+                ServiceManager.getGameService().recolorBox(coloredBoxDTO);
+
+                // notify all clients game status need to update
+                ServiceManager.getGameService().sendRedrawBoxCommandToAllClients(coloredBoxDTO);
+            } else if (object.getClass().equals(LockBoxDTO.class)) {
+                LockBoxDTO lockBoxDTO = (LockBoxDTO) object;
+                ServiceManager.getGameService().lockBox(lockBoxDTO);
+
+                System.out.println("Lock the box " + lockBoxDTO);
+
+                // notify all clients game status need to update
+                ServiceManager.getGameService().sendLockBoxCommandToAllClients(lockBoxDTO);
+            } else if (object.getClass().equals(UnlockBoxDTO.class)) {
+                UnlockBoxDTO unlockBoxDTO = (UnlockBoxDTO) object;
+                ServiceManager.getGameService().unlockBox(unlockBoxDTO);
+
+                System.out.println("Unlock the box " + unlockBoxDTO);
+
+                // notify all clients game status need to update
+                ServiceManager.getGameService().sendUnlockBoxCommandToAllClients(unlockBoxDTO);
+            } else if (object.getClass().equals(QueryBoxLockingDTO.class)) {
+                QueryBoxLockingDTO queryBoxLockingDTO = (QueryBoxLockingDTO) object;
+                QueryBoxLockingDTO result = ServiceManager.getGameService().updateBoxLockingStatusByLocalStatus(queryBoxLockingDTO);
+
+                SocketIOUtils.writeObjectToSocket(socket, result);
+            }
+        }
+    }
+
+    public void sendUpdatedGameStatusToClient(Object object) {
+        SocketIOUtils.writeObjectToSocket(socket, object);
+    }
+
     public void start() {
-        System.out.println("Starting " + threadName);
         if (t == null) {
-            t = new Thread(this, threadName);
+            t = new Thread(this, threadId);
             t.start();
         }
     }

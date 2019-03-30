@@ -2,12 +2,18 @@ package ui.register.model;
 
 import javafx.scene.canvas.Canvas;
 
+import java.awt.*;
+import java.util.Objects;
+
 public class BoxModel {
     private double coloredArea;
     private double boxArea;
     private double boxX;
     private double boxY;
+    private boolean isColored;
+    private boolean isLocked;
     private Canvas canvas;
+    private Color color = Color.WHITE;
 
     public BoxModel(double boxArea) {
         this.boxArea = boxArea;
@@ -55,5 +61,61 @@ public class BoxModel {
 
     public void setBoxArea(double boxArea) {
         this.boxArea = boxArea;
+    }
+
+    public boolean isColored() {
+        return isColored;
+    }
+
+    public void setColored(boolean colored) {
+        isColored = colored;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoxModel boxModel = (BoxModel) o;
+        return Double.compare(boxModel.coloredArea, coloredArea) == 0 &&
+                Double.compare(boxModel.boxArea, boxArea) == 0 &&
+                Double.compare(boxModel.boxX, boxX) == 0 &&
+                Double.compare(boxModel.boxY, boxY) == 0 &&
+                isColored == boxModel.isColored &&
+                isLocked == boxModel.isLocked &&
+                Objects.equals(canvas, boxModel.canvas);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(coloredArea, boxArea, boxX, boxY, isColored, isLocked, canvas);
+    }
+
+    @Override
+    public String toString() {
+        return "BoxModel{" +
+                "coloredArea=" + coloredArea +
+                ", boxArea=" + boxArea +
+                ", boxX=" + boxX +
+                ", boxY=" + boxY +
+                ", isColored=" + isColored +
+                ", isLocked=" + isLocked +
+                ", canvas=" + canvas +
+                '}';
     }
 }

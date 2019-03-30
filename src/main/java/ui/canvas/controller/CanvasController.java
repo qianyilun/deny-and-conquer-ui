@@ -1,5 +1,8 @@
 package ui.canvas.controller;
 
+import com.sun.security.ntlm.Server;
+import facade.ServerManager;
+import facade.ServiceManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,6 +17,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.status.game.GameStatus;
+import model.status.game.LocalStatus;
 import ui.register.model.BoxModel;
 import ui.register.model.CanvasModel;
 import utils.ColorUtils;
@@ -24,30 +29,20 @@ public class CanvasController {
     public Text playerNameLabel;
     public Text playerRankLabel;
     public ColorPicker colorPicker;
-//    public Slider penThickness;
-//    public TextArea boxRow;
-    public Button readyBtn;
-    public Button startBtn;
     public Text playerMachineLabel;
-//    public TextArea boxPercentToColor;
     public Label penSettingLabel;
-//    public Button setCanvasBtn;
     public GridPane canvasGridPane;
     public Canvas canvasTest;
+    private CanvasModel canvasModel = GameStatus.getInstance().getCanvasModel();
 
     private boolean firstClickOnGrid = true;
 
     public void onSetCanvasBtnClicked(ActionEvent event) {
-
         drawCanvasGridPanel();
 
     }
 
     private void drawCanvasGridPanel() {
-        // set pen thickness - done in constructor
-//        canvasModel.setPenThickness(penThickness.getValue());
-
-        CanvasModel canvasModel = CanvasModel.getInstance();
         // generate grids in gridPane
         int numRows = canvasModel.getRow();
         for (int i = 0; i < numRows; i++) {
@@ -67,18 +62,15 @@ public class CanvasController {
 
         for (int i = 0; i < numRows; i++) {
             for (int j = 0; j < numRows; j++) {
-                System.out.println(i + " " + j);
                 Canvas canvas = new Canvas();
-                canvas.setId("canvas" + i  + "-" + j);
+                canvas.setId("id: " + i  + "-" + j);
 
                 canvas.autosize();
 
                 canvas.setWidth(width);
                 canvas.setHeight(width);
 
-                canvas.setOnMouseClicked((event -> System.out.println("clickedddd")));
-
-                drawBoxes(canvas, canvasModel);
+                drawBoxes(canvas);
 
                 BoxModel boxModel = new BoxModel(boxArea);
                 boxModel.setCanvas(canvas);
@@ -91,11 +83,10 @@ public class CanvasController {
                 canvasGridPane.add(canvas, i, j);
             }
         }
-        System.out.println(canvasGridPane.getChildren().size());
     }
 
     // https://stackoverflow.com/questions/43429251/how-to-draw-a-continuous-line-with-mouse-on-javafx-canvas
-    private void drawBoxes(Canvas canvas, CanvasModel canvasModel) {
+    private void drawBoxes(Canvas canvas) {
         final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
         initDraw(graphicsContext);
 
@@ -103,6 +94,24 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
+                        BoxModel currentBoxModel = determineCurrentBoxModel(event);
+
+                        if (!currentBoxModel.getColor().equals(java.awt.Color.WHITE)) {
+                            return;
+                        }
+
+                        if (!LocalStatus.getInstance().isHost()) {
+                            ServiceManager.getGameService().questionServerIsBoxLocked(currentBoxModel);
+                        }
+
+                        if (currentBoxModel.isLocked()) {
+                            return;
+                        }
+                        if (!LocalStatus.getInstance().isHost()) {
+                            ServiceManager.getGameService().sendLockBoxWithBoxIdCommandToServer(currentBoxModel);
+                        } else {
+                            ServiceManager.getGameService().sendLockBoxCommandToAllClients(currentBoxModel);
+                        }
                     }
                 });
 
@@ -110,7 +119,7 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
-                        colorPixels(event, graphicsContext, canvasModel);
+                        colorPixels(event, graphicsContext);
                     }
                 });
 
@@ -118,17 +127,38 @@ public class CanvasController {
                 new EventHandler<MouseEvent>(){
                     @Override
                     public void handle(MouseEvent event) {
-                        BoxModel currentBoxModel = determineCurrentBoxModel(event, canvasModel);
+                        BoxModel currentBoxModel = determineCurrentBoxModel(event);
+
                         if (currentBoxModel.getColoredArea() >= (double) canvasModel.getPenThickness() / 100 * currentBoxModel.getBoxArea() ) {
-                            graphicsContext.setFill(ColorUtils.toFxColor(canvasModel.getColor())/*colorPicker.getValue()*/);
+                            // colored it all when area is enough
+                            currentBoxModel.setColored(true);
+
+                            graphicsContext.setFill(ColorUtils.toFxColor(canvasModel.getColor()));
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
+
+                            if (!LocalStatus.getInstance().isHost()) {
+                                ServiceManager.getGameService().sendColorBoxWithBoxIdCommandToServer(currentBoxModel);
+                            } else {
+                                ServiceManager.getGameService().sendRedrawBoxCommandToAllClients(currentBoxModel);
+                            }
                         } else {
-                            graphicsContext.setFill(Color.WHITE);
+                            // color it back to white
+                            currentBoxModel.setLocked(false);
+
+                            graphicsContext.setFill(ColorUtils.toFxColor(currentBoxModel.getColor()));
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
                             initDraw(graphicsContext);
+
+                            if (!currentBoxModel.getColor().equals(java.awt.Color.WHITE)) {
+                                return;
+                            }
+
+                            if (!LocalStatus.getInstance().isHost()) {
+                                ServiceManager.getGameService().sendUnlockBoxWithBoxIdCommandToServer(currentBoxModel);
+                            } else {
+                                ServiceManager.getGameService().sendUnlockBoxCommandToAllClients(currentBoxModel);
+                            }
                         }
-                        System.out.println(currentBoxModel.getBoxArea());
-                        System.out.println(currentBoxModel.getCanvas().getId() + ": " + currentBoxModel.getColoredArea());
                     }
                 });
     }
@@ -141,8 +171,8 @@ public class CanvasController {
                 && y >= currentBoxModel.getBoxY() && y <= currentBoxModel.getBoxY() + currentBoxModel.getCanvas().getHeight();
     }
 
-    private void colorPixels(MouseEvent event, GraphicsContext graphicsContext, CanvasModel canvasModel) {
-        BoxModel currentBoxModel = determineCurrentBoxModel(event, canvasModel);
+    private void colorPixels(MouseEvent event, GraphicsContext graphicsContext) {
+        BoxModel currentBoxModel = determineCurrentBoxModel(event);
         if (!isWithinCurrentBox(currentBoxModel, event)) {
             return;
         }
@@ -156,51 +186,29 @@ public class CanvasController {
         graphicsContext.fillRect(event.getX()-penThickness, event.getY()-penThickness, 2*penThickness, 2*penThickness);
     }
 
-    private boolean isPixelColored() {
+    private java.awt.Color getPixelColor() {
         // https://stackoverflow.com/questions/13061122/getting-rgb-value-from-under-mouse-cursor
+        Robot robot = null;
         try {
-            Robot robot = new Robot();
+            robot = new Robot();
             PointerInfo pi = MouseInfo.getPointerInfo();
             Point point = pi.getLocation();
             java.awt.Color awtColor = robot.getPixelColor(point.x, point.y);
-            if (!awtColor.equals(java.awt.Color.WHITE)) {
-                return true;
-            }
+            return awtColor;
         } catch (AWTException e) {
             e.printStackTrace();
+        }
+        return java.awt.Color.WHITE;
+    }
+
+    private boolean isPixelColored() {
+        java.awt.Color awtColor = getPixelColor();
+        if (!awtColor.equals(java.awt.Color.WHITE)) {
+            return true;
         }
 
         return false;
     }
-
-    @FXML
-    private void onReadyClicked(ActionEvent event) {
-//        System.out.println(ColorUtils.toAwtColor(colorPicker.getValue()));
-//        if (LocalStatus.getInstance().isInGame()) {
-//            return;
-//        }
-//
-//        String textOnBtn = readyBtn.getText();
-//        if (textOnBtn.equals("Ready")) {
-//            colorPicker.setDisable(true);
-//            penThickness.setDisable(true);
-//            boxRow.setDisable(true);
-//            boxRow.setDisable(true);
-//            boxPercentToColor.setDisable(true);
-//            setCanvasBtn.setDisable(true);
-//            readyBtn.setText("Cancel");
-//        } else {
-//            colorPicker.setDisable(false);
-//            penThickness.setDisable(false);
-//            boxRow.setDisable(false);
-//            boxRow.setDisable(false);
-//            boxPercentToColor.setDisable(false);
-//            setCanvasBtn.setDisable(false);
-//            readyBtn.setText("Ready");
-//        }
-//
-    }
-
 
     private void initDraw(GraphicsContext gc){
         double canvasWidth = gc.getCanvas().getWidth();
@@ -222,7 +230,7 @@ public class CanvasController {
         gc.setLineWidth(1);
     }
 
-    private BoxModel determineCurrentBoxModel(MouseEvent event, CanvasModel canvasModel) {
+    private BoxModel determineCurrentBoxModel(MouseEvent event) {
         String canvasId = ((Canvas) event.getSource()).getId();
         for (BoxModel boxModel : canvasModel.getBoxes()) {
             if (canvasId.equals(boxModel.getCanvas().getId())) {
