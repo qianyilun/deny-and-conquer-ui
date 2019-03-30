@@ -9,11 +9,10 @@ import java.net.Socket;
 
 public class ClientWorker implements Runnable {
     private Thread t;
-    private String threadId;
 
     @Override
     public void run() {
-        Socket socket = LocalStatus.getInstance().getSocketBetweenThisMachineAndServer();
+        Socket socket = LocalStatus.socketBetweenThisMachineAndServer;
         while (true) {
             Object object = SocketIOUtils.readObjectFromSocket(socket);
 
@@ -27,7 +26,7 @@ public class ClientWorker implements Runnable {
 
     public void listenForGameUpdatesFromServer() {
         if (t == null) {
-            t = new Thread(this, threadId);
+            t = new Thread(this);
             t.start();
         }
     }
