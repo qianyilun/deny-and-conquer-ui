@@ -58,6 +58,7 @@ public class GameService {
                 System.out.println("find the box");
                 boxModel.setColored(true);
                 boxModel.setLocked(true);
+                boxModel.setColor(color);
 
                 GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
                 graphicsContext.setFill(ColorUtils.toFxColor(color));
@@ -122,7 +123,7 @@ public class GameService {
         lockOrUnlockBox(boxId, false);
     }
 
-    private void lockOrUnlockBox(String boxId, boolean lockIt) {
+    public void lockOrUnlockBox(String boxId, boolean lockIt) {
         CanvasModel canvasModel = GameStatus.getInstance().getCanvasModel();
 
         List<BoxModel> boxModelList = canvasModel.getBoxes();
@@ -130,6 +131,7 @@ public class GameService {
             Canvas canvas = boxModel.getCanvas();
             if (boxId.equals(canvas.getId())) {
                 boxModel.setLocked(lockIt);
+                boxModel.setColored(lockIt);
 
                 break;
             }
@@ -153,17 +155,23 @@ public class GameService {
 
     }
 
-    public boolean questionServerIsBoxLocked(BoxModel boxModel) {
+    public void questionServerIsBoxLocked(BoxModel boxModel) {
         Socket socket = LocalStatus.socketBetweenThisMachineAndServer;
         String boxId = boxModel.getCanvas().getId();
         QueryBoxLockingDTO queryBoxLockingDTO = new QueryBoxLockingDTO(boxId);
 
         SocketIOUtils.writeObjectToSocket(socket, queryBoxLockingDTO);
 
-        Object object = SocketIOUtils.readObjectFromSocket(socket);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        System.out.println((QueryBoxLockingDTO) object);
+//        Object object = SocketIOUtils.readObjectFromSocket(socket);
 
-        return ((QueryBoxLockingDTO) object).isLocked();
+//        System.out.println((QueryBoxLockingDTO) object);
+
+//        return ((QueryBoxLockingDTO) object).isLocked();
     }
 }

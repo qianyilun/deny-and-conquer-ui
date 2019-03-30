@@ -4,6 +4,7 @@ import business.GameService;
 import facade.ServiceManager;
 import model.dto.ColoredBoxDTO;
 import model.dto.LockBoxDTO;
+import model.dto.QueryBoxLockingDTO;
 import model.dto.UnlockBoxDTO;
 import model.status.game.LocalStatus;
 import utils.SocketIOUtils;
@@ -25,6 +26,9 @@ public class ClientWorker implements Runnable {
                 ServiceManager.getGameService().lockBox((LockBoxDTO) object);
             } else if (object.getClass().equals(UnlockBoxDTO.class)) {
                 ServiceManager.getGameService().unlockBox((UnlockBoxDTO) object);
+            } else if (object.getClass().equals(QueryBoxLockingDTO.class)){
+                QueryBoxLockingDTO queryBoxLockingDTO = (QueryBoxLockingDTO) object;
+                ServiceManager.getGameService().lockOrUnlockBox(queryBoxLockingDTO.getBoxId(), queryBoxLockingDTO.isLocked());
             }
         }
     }

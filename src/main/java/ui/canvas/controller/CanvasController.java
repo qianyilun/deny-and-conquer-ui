@@ -29,8 +29,6 @@ public class CanvasController {
     public Text playerNameLabel;
     public Text playerRankLabel;
     public ColorPicker colorPicker;
-    public Button readyBtn;
-    public Button startBtn;
     public Text playerMachineLabel;
     public Label penSettingLabel;
     public GridPane canvasGridPane;
@@ -98,25 +96,22 @@ public class CanvasController {
                     public void handle(MouseEvent event) {
                         BoxModel currentBoxModel = determineCurrentBoxModel(event);
 
-                        if (!LocalStatus.getInstance().isHost()) {
-                            if (ServiceManager.getGameService().questionServerIsBoxLocked(currentBoxModel)) {
-                                return;
-                            }
-                        } else {
-                            if (currentBoxModel.isLocked()) {
-                                return;
-                            }
+                        if (!currentBoxModel.getColor().equals(java.awt.Color.WHITE)) {
+                            return;
                         }
 
-                        currentBoxModel.setLocked(true);
+                        if (!LocalStatus.getInstance().isHost()) {
+                            ServiceManager.getGameService().questionServerIsBoxLocked(currentBoxModel);
+                        }
 
+                        if (currentBoxModel.isLocked()) {
+                            return;
+                        }
                         if (!LocalStatus.getInstance().isHost()) {
                             ServiceManager.getGameService().sendLockBoxWithBoxIdCommandToServer(currentBoxModel);
                         } else {
                             ServiceManager.getGameService().sendLockBoxCommandToAllClients(currentBoxModel);
                         }
-
-
                     }
                 });
 
@@ -133,6 +128,7 @@ public class CanvasController {
                     @Override
                     public void handle(MouseEvent event) {
                         BoxModel currentBoxModel = determineCurrentBoxModel(event);
+
                         if (currentBoxModel.getColoredArea() >= (double) canvasModel.getPenThickness() / 100 * currentBoxModel.getBoxArea() ) {
                             // colored it all when area is enough
                             currentBoxModel.setColored(true);
@@ -145,25 +141,23 @@ public class CanvasController {
                             } else {
                                 ServiceManager.getGameService().sendRedrawBoxCommandToAllClients(currentBoxModel);
                             }
-
-
-
-
                         } else {
                             // color it back to white
                             currentBoxModel.setLocked(false);
 
-                            graphicsContext.setFill(Color.WHITE);
+                            graphicsContext.setFill(ColorUtils.toFxColor(currentBoxModel.getColor()));
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
                             initDraw(graphicsContext);
+
+                            if (!currentBoxModel.getColor().equals(java.awt.Color.WHITE)) {
+                                return;
+                            }
 
                             if (!LocalStatus.getInstance().isHost()) {
                                 ServiceManager.getGameService().sendUnlockBoxWithBoxIdCommandToServer(currentBoxModel);
                             } else {
                                 ServiceManager.getGameService().sendUnlockBoxCommandToAllClients(currentBoxModel);
                             }
-
-
                         }
                     }
                 });
@@ -192,27 +186,29 @@ public class CanvasController {
         graphicsContext.fillRect(event.getX()-penThickness, event.getY()-penThickness, 2*penThickness, 2*penThickness);
     }
 
-    private boolean isPixelColored() {
+    private java.awt.Color getPixelColor() {
         // https://stackoverflow.com/questions/13061122/getting-rgb-value-from-under-mouse-cursor
+        Robot robot = null;
         try {
-            Robot robot = new Robot();
+            robot = new Robot();
             PointerInfo pi = MouseInfo.getPointerInfo();
             Point point = pi.getLocation();
             java.awt.Color awtColor = robot.getPixelColor(point.x, point.y);
-            if (!awtColor.equals(java.awt.Color.WHITE)) {
-                return true;
-            }
+            return awtColor;
         } catch (AWTException e) {
             e.printStackTrace();
+        }
+        return java.awt.Color.WHITE;
+    }
+
+    private boolean isPixelColored() {
+        java.awt.Color awtColor = getPixelColor();
+        if (!awtColor.equals(java.awt.Color.WHITE)) {
+            return true;
         }
 
         return false;
     }
-
-    @FXML
-    private void onReadyClicked(ActionEvent event) {
-    }
-
 
     private void initDraw(GraphicsContext gc){
         double canvasWidth = gc.getCanvas().getWidth();

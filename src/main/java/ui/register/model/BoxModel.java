@@ -2,6 +2,7 @@ package ui.register.model;
 
 import javafx.scene.canvas.Canvas;
 
+import java.awt.*;
 import java.util.Objects;
 
 public class BoxModel {
@@ -12,6 +13,7 @@ public class BoxModel {
     private boolean isColored;
     private boolean isLocked;
     private Canvas canvas;
+    private Color color = Color.WHITE;
 
     public BoxModel(double boxArea) {
         this.boxArea = boxArea;
@@ -75,6 +77,14 @@ public class BoxModel {
 
     public void setLocked(boolean locked) {
         isLocked = locked;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     @Override
