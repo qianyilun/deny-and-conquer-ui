@@ -1,6 +1,8 @@
 package model.dto;
 
-public class UnlockBoxDTO {
+import java.io.Serializable;
+
+public class UnlockBoxDTO implements Serializable {
     String boxId;
 
     public UnlockBoxDTO(String boxId) {

@@ -1,6 +1,8 @@
 package model.dto;
 
-public class QueryBoxLockingDTO {
+import java.io.Serializable;
+
+public class QueryBoxLockingDTO implements Serializable {
     String boxId;
     boolean isLocked;
 

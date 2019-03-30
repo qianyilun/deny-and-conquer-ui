@@ -98,9 +98,16 @@ public class CanvasController {
                     public void handle(MouseEvent event) {
                         BoxModel currentBoxModel = determineCurrentBoxModel(event);
 
-                        if (ServiceManager.getGameService().questionServerIsBoxLocked(currentBoxModel)) {
-                            return;
+                        if (!LocalStatus.getInstance().isHost()) {
+                            if (ServiceManager.getGameService().questionServerIsBoxLocked(currentBoxModel)) {
+                                return;
+                            }
+                        } else {
+                            if (currentBoxModel.isLocked()) {
+                                return;
+                            }
                         }
+
                         currentBoxModel.setLocked(true);
 
                         if (!LocalStatus.getInstance().isHost()) {
