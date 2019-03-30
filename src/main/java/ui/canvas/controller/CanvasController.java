@@ -1,5 +1,7 @@
 package ui.canvas.controller;
 
+import com.sun.security.ntlm.Server;
+import facade.ServerManager;
 import facade.ServiceManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -95,7 +97,19 @@ public class CanvasController {
                     @Override
                     public void handle(MouseEvent event) {
                         BoxModel currentBoxModel = determineCurrentBoxModel(event);
+
+                        if (ServiceManager.getGameService().questionServerIsBoxLocked(currentBoxModel)) {
+                            return;
+                        }
                         currentBoxModel.setLocked(true);
+
+                        if (!LocalStatus.getInstance().isHost()) {
+                            ServiceManager.getGameService().sendLockBoxWithBoxIdCommandToServer(currentBoxModel);
+                        } else {
+                            ServiceManager.getGameService().sendLockBoxCommandToAllClients(currentBoxModel);
+                        }
+
+
                     }
                 });
 
@@ -122,8 +136,7 @@ public class CanvasController {
                             if (!LocalStatus.getInstance().isHost()) {
                                 ServiceManager.getGameService().sendColorBoxWithBoxIdCommandToServer(currentBoxModel);
                             } else {
-//                                ServiceManager.getGameService().updateCanvasModelInGameStatus();
-                                ServiceManager.getGameService().sendNewGameStatusToAllClients(currentBoxModel);
+                                ServiceManager.getGameService().sendRedrawBoxCommandToAllClients(currentBoxModel);
                             }
 
 
@@ -136,6 +149,14 @@ public class CanvasController {
                             graphicsContext.setFill(Color.WHITE);
                             graphicsContext.fillRect(0, 0, Math.sqrt(currentBoxModel.getBoxArea()), Math.sqrt(currentBoxModel.getBoxArea()));
                             initDraw(graphicsContext);
+
+                            if (!LocalStatus.getInstance().isHost()) {
+                                ServiceManager.getGameService().sendUnlockBoxWithBoxIdCommandToServer(currentBoxModel);
+                            } else {
+                                ServiceManager.getGameService().sendUnlockBoxCommandToAllClients(currentBoxModel);
+                            }
+
+
                         }
                     }
                 });

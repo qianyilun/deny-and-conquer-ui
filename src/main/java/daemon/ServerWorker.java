@@ -1,10 +1,9 @@
 package daemon;
 
+import facade.ServerManager;
 import facade.ServiceManager;
+import model.dto.*;
 import model.status.game.LocalStatus;
-import model.dto.ColoredBoxDTO;
-import model.dto.ConfigurationDTO;
-import model.dto.PlayerDTO;
 import ui.register.model.BoxModel;
 import utils.SocketIOUtils;
 
@@ -61,18 +60,37 @@ public class ServerWorker implements Runnable {
 
             if (object.getClass().equals(ColoredBoxDTO.class)) {
                 ColoredBoxDTO coloredBoxDTO = (ColoredBoxDTO) object;
-                System.out.println("color the box " + coloredBoxDTO.getBoxId() + " by color " + coloredBoxDTO.getColor());
-                ServiceManager.getGameService().colorBoxWithBoxId(coloredBoxDTO);
+                ServiceManager.getGameService().recolorBox(coloredBoxDTO);
+
+                // notify all clients game status need to update
+                ServiceManager.getGameService().sendRedrawBoxCommandToAllClients(coloredBoxDTO);
+            } else if (object.getClass().equals(LockBoxDTO.class)) {
+                LockBoxDTO lockBoxDTO = (LockBoxDTO) object;
+                ServiceManager.getGameService().lockBox(lockBoxDTO);
+
+                System.out.println("Lock the box " + lockBoxDTO);
+
+                // notify all clients game status need to update
+                ServiceManager.getGameService().sendLockBoxCommandToAllClients(lockBoxDTO);
+            } else if (object.getClass().equals(UnlockBoxDTO.class)) {
+                UnlockBoxDTO unlockBoxDTO = (UnlockBoxDTO) object;
+                ServiceManager.getGameService().unlockBox(unlockBoxDTO);
+
+                System.out.println("Unlock the box " + unlockBoxDTO);
+
+                // notify all clients game status need to update
+                ServiceManager.getGameService().sendUnlockBoxCommandToAllClients(unlockBoxDTO);
+            } else if (object.getClass().equals(QueryBoxLockingDTO.class)) {
+                QueryBoxLockingDTO queryBoxLockingDTO = (QueryBoxLockingDTO) object;
+                QueryBoxLockingDTO result = ServiceManager.getGameService().updateBoxLockingStatusByLocalStatus(queryBoxLockingDTO);
+
+                SocketIOUtils.writeObjectToSocket(socket, result);
             }
         }
     }
 
-    public void sendUpdatedGameStatusToClient(BoxModel boxModel) {
-        String boxId = boxModel.getCanvas().getId();
-        ColoredBoxDTO coloredBoxDTO = new ColoredBoxDTO(boxId);
-
-        SocketIOUtils.writeObjectToSocket(socket, coloredBoxDTO);
-
+    public void sendUpdatedGameStatusToClient(Object object) {
+        SocketIOUtils.writeObjectToSocket(socket, object);
     }
 
     public void start() {

@@ -1,7 +1,10 @@
 package daemon;
 
+import business.GameService;
 import facade.ServiceManager;
 import model.dto.ColoredBoxDTO;
+import model.dto.LockBoxDTO;
+import model.dto.UnlockBoxDTO;
 import model.status.game.LocalStatus;
 import utils.SocketIOUtils;
 
@@ -17,9 +20,11 @@ public class ClientWorker implements Runnable {
             Object object = SocketIOUtils.readObjectFromSocket(socket);
 
             if (object.getClass().equals(ColoredBoxDTO.class)) {
-                ColoredBoxDTO coloredBoxDTO = (ColoredBoxDTO) object;
-                System.out.println("color the box " + coloredBoxDTO.getBoxId() + " by color " + coloredBoxDTO.getColor());
-                ServiceManager.getGameService().colorBoxWithBoxId(coloredBoxDTO);
+                ServiceManager.getGameService().recolorBox((ColoredBoxDTO) object);
+            } else if (object.getClass().equals(LockBoxDTO.class)) {
+                ServiceManager.getGameService().lockBox((LockBoxDTO) object);
+            } else if (object.getClass().equals(UnlockBoxDTO.class)) {
+                ServiceManager.getGameService().unlockBox((UnlockBoxDTO) object);
             }
         }
     }

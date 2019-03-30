@@ -2,6 +2,8 @@ package ui.register.model;
 
 import javafx.scene.canvas.Canvas;
 
+import java.util.Objects;
+
 public class BoxModel {
     private double coloredArea;
     private double boxArea;
@@ -73,6 +75,25 @@ public class BoxModel {
 
     public void setLocked(boolean locked) {
         isLocked = locked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoxModel boxModel = (BoxModel) o;
+        return Double.compare(boxModel.coloredArea, coloredArea) == 0 &&
+                Double.compare(boxModel.boxArea, boxArea) == 0 &&
+                Double.compare(boxModel.boxX, boxX) == 0 &&
+                Double.compare(boxModel.boxY, boxY) == 0 &&
+                isColored == boxModel.isColored &&
+                isLocked == boxModel.isLocked &&
+                Objects.equals(canvas, boxModel.canvas);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(coloredArea, boxArea, boxX, boxY, isColored, isLocked, canvas);
     }
 
     @Override
