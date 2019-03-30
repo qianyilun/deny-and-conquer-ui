@@ -28,7 +28,6 @@
                </font>
             </TextArea>
             <Button fx:id="setCanvasBtn" layoutX="66.0" layoutY="246.0" mnemonicParsing="false" onAction="#onSetCanvasBtnClicked" text="Set Canvas!" />
-            <Button fx:id="readyBtn" layoutX="38.0" layoutY="369.0" mnemonicParsing="false" onAction="#onReadyClicked" text="Ready" />
             <Button fx:id="startBtn" layoutX="112.0" layoutY="369.0" mnemonicParsing="false" text="Start!" />
             <Text fx:id="playerMachineLabel" layoutX="31.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You are machine 2" wrappingWidth="138.65526074171066" />
             <Separator layoutX="12.0" layoutY="334.0" prefHeight="3.0" prefWidth="183.0" />
