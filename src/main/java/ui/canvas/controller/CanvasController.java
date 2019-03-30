@@ -123,7 +123,7 @@ public class CanvasController {
                                 ServiceManager.getGameService().sendColorBoxWithBoxIdCommandToServer(currentBoxModel);
                             } else {
 //                                ServiceManager.getGameService().updateCanvasModelInGameStatus();
-                                ServiceManager.getGameService().sendNewGameStatusToAllClients();
+                                ServiceManager.getGameService().sendNewGameStatusToAllClients(currentBoxModel);
                             }
 
 

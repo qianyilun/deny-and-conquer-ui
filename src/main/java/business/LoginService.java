@@ -1,5 +1,6 @@
 package business;
 
+import daemon.ClientWorker;
 import facade.ServerManager;
 import facade.ServiceManager;
 import javafx.stage.Stage;
@@ -57,9 +58,9 @@ public class LoginService {
         // launch game UI
         launchCanvas();
 
-        ServiceManager.getGameService().listenForGameUpdatesFromServer();
-
-        System.out.println("can you see this time?");
+        // listen
+        ClientWorker clientWorker = new ClientWorker();
+        clientWorker.listenForGameUpdatesFromServer();
 
         return true;
     }

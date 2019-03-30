@@ -49,26 +49,15 @@ public class GameService {
         }
     }
 
-    public void sendNewGameStatusToAllClients() {
+    public void sendNewGameStatusToAllClients(BoxModel boxModel) {
         List<ServerWorker> serverWorkerList = ServerStatus.getInstance().getWorkerList();
 
         for (ServerWorker serverWorker : serverWorkerList) {
-            serverWorker.sendUpdatedGameStatusToClient();
+            serverWorker.sendUpdatedGameStatusToClient(boxModel);
         }
     }
 
-    public void listenForGameUpdatesFromServer() {
-        Socket socket = LocalStatus.getInstance().getSocketBetweenThisMachineAndServer();
-        while (true) {
-            Object object = SocketIOUtils.readObjectFromSocket(socket);
 
-            if (object.getClass().equals(ColoredBoxDTO.class)) {
-                ColoredBoxDTO coloredBoxDTO = (ColoredBoxDTO) object;
-                System.out.println("color the box " + coloredBoxDTO.getBoxId() + " by color " + coloredBoxDTO.getColor());
-                ServiceManager.getGameService().colorBoxWithBoxId(coloredBoxDTO);
-            }
-        }
-    }
 
 //    public void updateCanvasModelInGameStatus(BoxModel currentBoxModel) {
 //        CanvasModel canvasModel = GameStatus.getInstance().getCanvasModel();

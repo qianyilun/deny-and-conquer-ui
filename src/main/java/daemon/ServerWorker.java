@@ -5,6 +5,7 @@ import model.status.game.LocalStatus;
 import model.dto.ColoredBoxDTO;
 import model.dto.ConfigurationDTO;
 import model.dto.PlayerDTO;
+import ui.register.model.BoxModel;
 import utils.SocketIOUtils;
 
 import java.io.*;
@@ -66,8 +67,12 @@ public class ServerWorker implements Runnable {
         }
     }
 
-    public void sendUpdatedGameStatusToClient() {
-        System.out.println("Can you see");
+    public void sendUpdatedGameStatusToClient(BoxModel boxModel) {
+        String boxId = boxModel.getCanvas().getId();
+        ColoredBoxDTO coloredBoxDTO = new ColoredBoxDTO(boxId);
+
+        SocketIOUtils.writeObjectToSocket(socket, coloredBoxDTO);
+
     }
 
     public void start() {
