@@ -20,13 +20,11 @@ import java.util.List;
 
 public class GameService {
     public void sendColorBoxWithBoxIdCommandToServer(BoxModel boxModel) {
-        Socket socket = LocalStatus.getInstance().getSocketBetweenThisMachineAndServer();
+        Socket socket = LocalStatus.socketBetweenThisMachineAndServer;
         String boxId = boxModel.getCanvas().getId();
         ColoredBoxDTO coloredBoxDTO = new ColoredBoxDTO(boxId);
 
         SocketIOUtils.writeObjectToSocket(socket, coloredBoxDTO);
-
-        // where to add ask client listen???
     }
 
     public synchronized void colorBoxWithBoxId(ColoredBoxDTO coloredBoxDTO) {
@@ -45,6 +43,8 @@ public class GameService {
                 GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
                 graphicsContext.setFill(ColorUtils.toFxColor(color));
                 graphicsContext.fillRect(0, 0, Math.sqrt(boxModel.getBoxArea()), Math.sqrt(boxModel.getBoxArea()));
+
+                break;
             }
         }
     }

@@ -37,7 +37,7 @@ public class LoginService {
         Socket clientSocket = new Socket("192.168.0.16", 7777);
 
         // save the connection socket
-        LocalStatus.getInstance().setSocketBetweenThisMachineAndServer(clientSocket);
+        LocalStatus.socketBetweenThisMachineAndServer = clientSocket;
 
         // write object.
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());

@@ -16,7 +16,7 @@ public class LocalStatus {
     private boolean isHost = false;
 
     private Color color;
-    private Socket socketBetweenThisMachineAndServer;
+    public static Socket socketBetweenThisMachineAndServer;
 
 
     public static LocalStatus getInstance() {
@@ -57,14 +57,5 @@ public class LocalStatus {
     public void setColor(Color color) {
         this.color = color;
     }
-
-    public Socket getSocketBetweenThisMachineAndServer() {
-        return socketBetweenThisMachineAndServer;
-    }
-
-    public void setSocketBetweenThisMachineAndServer(Socket socketBetweenThisMachineAndServer) {
-        this.socketBetweenThisMachineAndServer = socketBetweenThisMachineAndServer;
-    }
-
 
 }
